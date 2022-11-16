@@ -1,15 +1,23 @@
 const {
-  userModel,
-  elementModel,
-  itemModel,
-  imageModel,
+  userModel
 } = require("../schema/schema.js");
 
 exports.fetchAllUsers = async () => {
-  const users = await userModel.find({})
   try {
-        return users
-      } catch (error) {
-        return error
-      }
-}
+    const users = await userModel.find({});
+    return users;
+  } catch (error) {
+    return error;
+  }
+};
+
+exports.postNewUser = async (userBody) => {
+  const user = new userModel(userBody);
+
+  try {
+    await user.save();
+    return user;
+  } catch (error) {
+    response.status(500).send(error);
+  }
+};

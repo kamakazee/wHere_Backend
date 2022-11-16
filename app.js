@@ -4,7 +4,7 @@ const cors = require("cors");
 require("dotenv").config({ path: "./config.env" });
 const connection = require("./db/connection")
 const upload = require("./db/upload");
-const { getAllUsers } = require("./controllers/user-controller")
+const { getAllUsers, addUser } = require("./controllers/user-controller")
 
 const {
   userModel,
@@ -20,19 +20,7 @@ app.use(express.json());
 
 app.get("/api/users", getAllUsers);
 
-app.post("/api/add_user", async (request, response) => {
-  const user = new userModel(request.body);
-
-  console.log("request body", request.body);
-  console.log("user", user);
-
-  try {
-    await user.save();
-    response.send(user);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-});
+app.post("/api/add_user", addUser);
 
 app.get("/api/elements");
 
@@ -49,8 +37,6 @@ app.post("/api/add_element", async (request, response) => {
     response.status(500).send(error);
   }
 });
-
-
 
 app.post("/api/add_item", async (request, response) => {
   const item = new itemModel(request.body);
