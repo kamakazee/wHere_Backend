@@ -5,10 +5,11 @@ require("dotenv").config({ path: "./config.env" });
 const connection = require("./db/connection")
 const upload = require("./db/upload");
 const { getAllUsers, addUser } = require("./controllers/user-controller")
+const {getAllContainers, addContainer} = require("./controllers/containers-controller")
 
 const {
   userModel,
-  elementModel,
+  containerModel,
   itemModel,
   imageModel,
 } = require("./schema/schema");
@@ -22,21 +23,9 @@ app.get("/api/users", getAllUsers);
 
 app.post("/api/add_user", addUser);
 
-app.get("/api/elements");
+app.get("/api/containers", getAllContainers);
 
-app.post("/api/add_element", async (request, response) => {
-  const element = new elementModel(request.body);
-
-  console.log("request body", request.body);
-  console.log("element", element);
-
-  try {
-    await element.save();
-    response.send(element);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-});
+app.post("/api/add_container", addContainer);
 
 app.post("/api/add_item", async (request, response) => {
   const item = new itemModel(request.body);
@@ -44,7 +33,7 @@ app.post("/api/add_item", async (request, response) => {
   try {
     await item.save();
     response.send(item);
-    await elementModel.findOneAndUpdate(
+    await containerModel.findOneAndUpdate(
       { _id: "637371904e79b2a678b82078" },
       { $push: { contains: item } }
     );
