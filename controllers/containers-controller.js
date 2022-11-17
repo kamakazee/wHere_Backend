@@ -38,27 +38,27 @@ exports.getContainerById = (req, res, next) => {
 
         container.image = image.img;
 
-        //console.log("Image found:", image)
+        console.log("Image found:", image)
 
         const containsArray = []
+
+        let containsArrayCount=0
 
         container.contains.map((containerId) => {
 
           console.log("Container Id:", containerId)
 
-          //console.log("containerid: ", containerId)
-
-          let containsArrayCount=0
+          
 
           if (typeof containerId === "string") {
+
+            console.log("Is a string")
             getNestedContainerById(containerId).then((nestedContainer) => {
 
               containsArrayCount++
 
               containsArray.push(nestedContainer)
-
-              
-              
+  
               if (containsArray.length === container.contains.length){
 
                 console.log("containersArray length", containsArray.length)
@@ -91,10 +91,49 @@ exports.getContainerById = (req, res, next) => {
               }
             })
           } else {
+
             containsArrayCount++
+
+            console.log("Is an object")
+
             containsArray.push(containerId)
 
-            
+            console.log("containsArrayCount: ", containsArrayCount)
+
+            if (containsArrayCount === container.contains.length){
+
+              console.log("containersArray length", containsArray.length)
+
+              let imageCounter = 0
+
+              console.log("ENd of first mapping of containers")
+
+              containsArray.map((element, index) => {
+                
+                fetchImageById(element.image).then((image) => {
+
+                  imageCounter ++
+
+                  containsArray[index].image = image.img
+
+                  if (imageCounter===containsArray.length){
+
+                    console.log("ENd of images mapping")
+
+                    container.contains = containsArray
+                    //console.log(container, "<---------------------------")
+                    res.status(200).send(container);
+
+                  }
+                })
+                
+              })
+              
+            }
+
+
+
+
           }
         });
       
