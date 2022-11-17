@@ -59,6 +59,10 @@ exports.getContainerById = (req, res, next) => {
               containsArrayCount++
 
               containsArray.push(nestedContainer)
+
+              console.log("Size of containsArrayCount: ", containsArrayCount)
+
+              
   
               if (containsArrayCount === container.contains.length){
 
