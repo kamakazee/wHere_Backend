@@ -20,4 +20,11 @@ exports.postContainer = async (containerBody) => {
   }
 };
 
-// exports.fetchContainerById = 
+exports.fetchContainerById = async (id) => {
+  try {
+    const container = await containerModel.findById(id);
+    return container;
+  } catch (error) {
+    return error;
+  }
+};

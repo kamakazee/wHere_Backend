@@ -38,8 +38,6 @@ app.get("/api/containers/:id", getContainerById)
 
 //getRooms don't have parent_id
 
-//getContainerById
-//getImageById
 // getAllItems, addItem, getItemById
 
 app.post("/api/add_item", async (request, response) => {
