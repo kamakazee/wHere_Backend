@@ -29,7 +29,7 @@ exports.addContainer = (req, res, next) => {
 
 exports.getContainerById = (req, res, next) => {
 
-  console.log("Inside of getcontainerbyid")
+  //console.log("Inside of getcontainerbyid")
   const { id } = req.params;
   fetchContainerById(id)
     .then((container) => {
@@ -52,7 +52,7 @@ exports.getContainerById = (req, res, next) => {
 
           if (typeof containerId === "string") {
 
-            console.log("Is a string")
+            //console.log("Is a string")
 
             getNestedContainerById(containerId).then((nestedContainer) => {
 
@@ -60,7 +60,7 @@ exports.getContainerById = (req, res, next) => {
 
               containsArray.push(nestedContainer)
 
-              console.log("Size of containsArrayCount: ", containsArrayCount)
+              //console.log("Size of containsArrayCount: ", containsArrayCount)
 
               
   
@@ -70,7 +70,7 @@ exports.getContainerById = (req, res, next) => {
 
                 let imageCounter = 0
 
-                console.log("ENd of first mapping of containers")
+                //console.log("ENd of first mapping of containers")
 
                 containsArray.map((element, index) => {
                   
@@ -82,10 +82,10 @@ exports.getContainerById = (req, res, next) => {
 
                     if (imageCounter===containsArray.length){
 
-                      console.log("ENd of images mapping")
+                      //console.log("ENd of images mapping")
 
                       container.contains = containsArray
-                      console.log(container, "<---------------------------")
+                      //console.log(container, "<---------------------------")
                       res.status(200).send(container);
 
                     }
@@ -99,11 +99,11 @@ exports.getContainerById = (req, res, next) => {
 
             containsArrayCount++
 
-            console.log("Is an object")
+            //console.log("Is an object")
 
             containsArray.push(containerId)
 
-            console.log("containsArrayCount: ", containsArrayCount)
+            //console.log("containsArrayCount: ", containsArrayCount)
 
             if (containsArrayCount === container.contains.length){
 
@@ -111,7 +111,7 @@ exports.getContainerById = (req, res, next) => {
 
               let imageCounter = 0
 
-              console.log("ENd of first mapping of containers")
+              //console.log("ENd of first mapping of containers")
 
               containsArray.map((element, index) => {
                 
@@ -123,10 +123,10 @@ exports.getContainerById = (req, res, next) => {
 
                   if (imageCounter===containsArray.length){
 
-                    console.log("ENd of images mapping")
+                    //console.log("ENd of images mapping")
 
                     container.contains = containsArray
-                    console.log(container, "<---------------------------")
+                    //console.log(container, "<---------------------------")
                     res.status(200).send(container);
 
                   }
