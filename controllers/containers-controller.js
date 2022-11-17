@@ -53,13 +53,14 @@ exports.getContainerById = (req, res, next) => {
           if (typeof containerId === "string") {
 
             console.log("Is a string")
+
             getNestedContainerById(containerId).then((nestedContainer) => {
 
               containsArrayCount++
 
               containsArray.push(nestedContainer)
   
-              if (containsArray.length === container.contains.length){
+              if (containsArrayCount === container.contains.length){
 
                 //console.log("containersArray length", containsArray.length)
 
