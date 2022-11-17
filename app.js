@@ -4,6 +4,12 @@ const cors = require("cors");
 require("dotenv").config({ path: "./config.env" });
 const connection = require("./db/connection")
 const upload = require("./db/upload");
+const path = require("path");
+const bodyParser = require("body-parser");
+const sharp = require ("sharp")
+const fs = require("fs");
+
+
 const { getAllUsers, addUser } = require("./controllers/user-controller")
 const {
   getAllContainers,
@@ -98,28 +104,59 @@ app.get("/api/images", (req, res) => {
   });
 });
 
-app.post("/api/image", upload.single("file"), (req, res, next) => {
-  const obj = {
-    name: req.body.name,
-    desc: req.body.desc,
-    img: {
-      data: fs.readFileSync(
-        path.join(__dirname + "/uploads/" + req.file.filename)
-      ),
-      contentType: "image/png",
-    },
-  };
+//Promisify resize function
 
-  imageModel.create(obj, (err, item) => {
-    if (err) {
-      console.log(err);
-    } else {
-      // item.save();
-      console.log("Id of uploaded image", item._id);
-      res.redirect("/");
-    }
-  });
+const resizeImage = async (filename)=>{
+
+  console.log("Inside of resize")
+  
+  try {
+    await sharp(__dirname + `/db/uploads/${filename}`)
+      .resize({
+        width: 640,
+        height: 480
+      })
+      .toFile(__dirname + `/db/uploads/${filename}_resized`);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+app.post("/api/image", upload.single("file"), (req, res, next) => {
+
+  console.log("Inside of post")
+
+  resizeImage(req.file.filename).then(()=>{
+
+    const obj = {
+      name: req.body.name,
+      desc: req.body.desc,
+      img: {
+        data: fs.readFileSync(
+          path.join(__dirname + "/db/uploads/" + req.file.filename +"_resized")
+        ),
+        contentType: "image/png",
+      },
+    };
+  
+    imageModel.create(obj, (err, item) => {
+      if (err) {
+        console.log(err);
+      } else {
+        // item.save();
+        console.log("Id of uploaded image", item._id);
+        res.send(`Id of uploaded image ${item._id}`);
+      }
+    });
+  })
+
 });
+
+app.use((err, req, res, next) => {
+  console.log("something went wrong: ", err)
+  
+})
 
 connection();
 
