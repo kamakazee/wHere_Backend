@@ -1,151 +1,133 @@
-const express = require("express");
-const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
+// const express = require("express");
+// const upload = require('./upload.js')
 
-const {
-  userModel,
-  elementModel,
-  itemModel,
-  imageModel,
-} = require("../schema/models.js");
+// const {
+//   userModel,
+//   elementModel,
+//   itemModel,
+//   imageModel,
+// } = require("../schema/schema.js");
 
-//Code related to file upload---------------------------------------
-//------------------------------------------------------------------
+// const app = express();
 
-var storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads");
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.fieldname + "-" + Date.now());
-  },
-});
+// app.post("/api/add_user", async (request, response) => {
+//   const user = new userModel(request.body);
 
-var upload = multer({ storage: storage });
+//   console.log("request body", request.body);
+//   console.log("user", user);
 
-//Code related to file upload---------------------------------------
-//------------------------------------------------------------------
+//   try {
+//     await user.save();
+//     response.send(user);
+//   } catch (error) {
+//     response.status(500).send(error);
+//   }
+// });
 
-const app = express();
+// app.post("/api/add_element", async (request, response) => {
+//   const element = new elementModel(request.body);
 
-app.post("/add_user", async (request, response) => {
-  const user = new userModel(request.body);
+//   console.log("request body", request.body);
+//   console.log("element", element);
 
-  console.log("request body", request.body);
-  console.log("user", user);
+//   try {
+//     await element.save();
+//     response.send(element);
+//   } catch (error) {
+//     response.status(500).send(error);
+//   }
+// });
 
-  try {
-    await user.save();
-    response.send(user);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-});
+// app.get("/api/users", async (request, response) => {
 
-app.post("/add_element", async (request, response) => {
-  const element = new elementModel(request.body);
+//   const users = await userModel.find({});
 
-  console.log("request body", request.body);
-  console.log("element", element);
+//   try {
+//     response.send(users);
+//   } catch (error) {
+//     response.status(500).send(error);
+//   }
+// });
 
-  try {
-    await element.save();
-    response.send(element);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-});
+// app.post("/api/add_item", async (request, response) => {
+//   const item = new itemModel(request.body);
 
-app.get("/users", async (request, response) => {
-  const users = await userModel.find({});
+//   try {
+//     await item.save();
+//     response.send(item);
+//     await elementModel.findOneAndUpdate(
+//       { _id: "637371904e79b2a678b82078" },
+//       { $push: { contains: item } }
+//     );
+//     console.log(item);
+//   } catch (error) {
+//     response.status(500).send(error);
+//   }
+// });
 
-  try {
-    response.send(users);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-});
+// app.get("/api/items/:name", async (request, response) => {
+//   const getItemById = await itemModel.find({ name: request.params.name });
+//   try {
+//     response.send(getItemById);
+//     console.log("Inside of Item Get");
+//     console.log(request.params.name);
+//     console.log(getItemById);
+//   } catch (error) {
+//     response.status(500).send(error);
+//   }
+// });
 
-app.post("/add_item", async (request, response) => {
-  const item = new itemModel(request.body);
+// app.get("/api/images", (req, res) => {
+//   //console.log("Inside of GET")
 
-  try {
-    await item.save();
-    response.send(item);
-    await elementModel.findOneAndUpdate(
-      { _id: "637371904e79b2a678b82078" },
-      { $push: { contains: item } }
-    );
-    console.log(item);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-});
+//   imageModel.find({}, (err, items) => {
+//     //find({}
+//     if (err) {
+//       console.log(err);
+//       res.status(500).send("An error occurred", err);
+//     } else {
+//       const imagesArray = [];
 
-app.get("/items/:name", async (request, response) => {
-  const getItemById = await itemModel.find({ name: request.params.name });
-  try {
-    response.send(getItemById);
-    console.log("Inside of Item Get");
-    console.log(request.params.name);
-    console.log(getItemById);
-  } catch (error) {
-    response.status(500).send(error);
-  }
-});
+//       items.forEach((imageDoc) => {
+//         const imageObject = {};
 
-app.get("/images", (req, res) => {
-  //console.log("Inside of GET")
+//         const imageToBase64String = imageDoc.img.data.toString("base64");
 
-  imageModel.find({}, (err, items) => {
-    //find({}
-    if (err) {
-      console.log(err);
-      res.status(500).send("An error occurred", err);
-    } else {
-      const imagesArray = [];
+//         imageObject["name"] = imageDoc._doc.name;
+//         imageObject["desc"] = imageDoc._doc.desc;
+//         imageObject["_id"] = imageDoc._doc._id;
+//         imageObject["img"] = imageToBase64String;
+//         imagesArray.push(imageObject);
+//       });
 
-      items.forEach((imageDoc) => {
-        const imageObject = {};
+//       //console.log(imagesArray[0])
 
-        const imageToBase64String = imageDoc.img.data.toString("base64");
+//       res.send(imagesArray);
+//     }
+//   });
+// });
 
-        imageObject["name"] = imageDoc._doc.name;
-        imageObject["desc"] = imageDoc._doc.desc;
-        imageObject["_id"] = imageDoc._doc._id;
-        imageObject["img"] = imageToBase64String;
-        imagesArray.push(imageObject);
-      });
+// app.post("/api/image", upload.single("file"), (req, res, next) => {
+//   const obj = {
+//     name: req.body.name,
+//     desc: req.body.desc,
+//     img: {
+//       data: fs.readFileSync(
+//         path.join(__dirname + "/uploads/" + req.file.filename)
+//       ),
+//       contentType: "image/png",
+//     },
+//   };
 
-      //console.log(imagesArray[0])
+//   imageModel.create(obj, (err, item) => {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       // item.save();
+//       console.log("Id of uploaded image", item._id);
+//       res.redirect("/");
+//     }
+//   });
+// });
 
-      res.send(imagesArray);
-    }
-  });
-});
-
-app.post("/image", upload.single("file"), (req, res, next) => {
-  const obj = {
-    name: req.body.name,
-    desc: req.body.desc,
-    img: {
-      data: fs.readFileSync(
-        path.join(__dirname + "/uploads/" + req.file.filename)
-      ),
-      contentType: "image/png",
-    },
-  };
-
-  imageModel.create(obj, (err, item) => {
-    if (err) {
-      console.log(err);
-    } else {
-      // item.save();
-      console.log("Id of uploaded image", item._id);
-      res.redirect("/");
-    }
-  });
-});
-
-module.exports = app;
+// module.exports = app;

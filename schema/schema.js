@@ -11,23 +11,27 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-const ElementSchema = new mongoose.Schema({
+const ContainerSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
-  isContainer: {
-    type: Boolean,
-    default: true,
+  description: {
+    type: String,
+    default: "",
   },
-  imageUrl: {
+  image: {
     type: String,
     default: "defaultImage",
+  },
+  parent_id: {
+    type: String,
+    default: "",
   },
 
   contains: {
     type: Array,
-    default: "defaultImage",
+    default: [],
   },
 });
 
@@ -57,12 +61,12 @@ var imageSchema = new mongoose.Schema({
 
 const Image = mongoose.model("Image", imageSchema);
 const User = mongoose.model("User", UserSchema);
-const Element = mongoose.model("Element", ElementSchema);
+const Container = mongoose.model("Element", ContainerSchema);
 const Item = mongoose.model("Item", ItemSchema);
 
 module.exports = {
   userModel: User,
-  elementModel: Element,
+  containerModel: Container,
   itemModel: Item,
   imageModel: Image,
 };
