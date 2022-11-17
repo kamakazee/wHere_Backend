@@ -33,22 +33,35 @@ exports.getContainerById = (req, res, next) => {
   const { id } = req.params;
   fetchContainerById(id)
     .then((container) => {
+      console.log("Container found: ", container)
       fetchImageById(container.image).then((image) => {
 
         container.image = image.img;
+
+        //console.log("Image found:", image)
 
         const containsArray = []
 
         container.contains.map((containerId) => {
 
+          console.log("Container Id:", containerId)
+
           //console.log("containerid: ", containerId)
+
+          let containsArrayCount=0
 
           if (typeof containerId === "string") {
             getNestedContainerById(containerId).then((nestedContainer) => {
 
+              containsArrayCount++
+
               containsArray.push(nestedContainer)
+
+              
               
               if (containsArray.length === container.contains.length){
+
+                console.log("containersArray length", containsArray.length)
 
                 let imageCounter = 0
 
@@ -71,8 +84,6 @@ exports.getContainerById = (req, res, next) => {
                       res.status(200).send(container);
 
                     }
-                    
-        
                   })
                   
                 })
@@ -80,7 +91,10 @@ exports.getContainerById = (req, res, next) => {
               }
             })
           } else {
+            containsArrayCount++
             containsArray.push(containerId)
+
+            
           }
         });
       
