@@ -5,7 +5,12 @@ require("dotenv").config({ path: "./config.env" });
 const connection = require("./db/connection")
 const upload = require("./db/upload");
 const { getAllUsers, addUser } = require("./controllers/user-controller")
-const {getAllContainers, addContainer} = require("./controllers/containers-controller")
+const {
+  getAllContainers,
+  addContainer,
+  getContainerById,
+} = require("./controllers/containers-controller");
+const {getImageById} = require("./controllers/images-controller")
 
 const {
   userModel,
@@ -26,6 +31,16 @@ app.post("/api/add_user", addUser);
 app.get("/api/containers", getAllContainers);
 
 app.post("/api/add_container", addContainer);
+
+app.get("/api/images/:id", getImageById);
+
+app.get("/api/containers/:id", getContainerById)
+
+//getRooms don't have parent_id
+
+//getContainerById
+//getImageById
+// getAllItems, addItem, getItemById
 
 app.post("/api/add_item", async (request, response) => {
   const item = new itemModel(request.body);

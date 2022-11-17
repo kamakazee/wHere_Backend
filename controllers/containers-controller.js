@@ -21,3 +21,7 @@ exports.addContainer = (req, res, next) => {
       next(err);
     })
 }
+
+exports.getContainerById = (req, res, next) => {
+  fetchContainerById()
+}
