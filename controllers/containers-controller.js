@@ -28,6 +28,8 @@ exports.addContainer = (req, res, next) => {
 };
 
 exports.getContainerById = (req, res, next) => {
+
+  console.log("Inside of getcontainerbyid")
   const { id } = req.params;
   fetchContainerById(id)
     .then((container) => {
@@ -50,6 +52,8 @@ exports.getContainerById = (req, res, next) => {
 
                 let imageCounter = 0
 
+                console.log("ENd of first mapping of containers")
+
                 containsArray.map((element, index) => {
                   
                   fetchImageById(element.image).then((image) => {
@@ -59,6 +63,8 @@ exports.getContainerById = (req, res, next) => {
                     containsArray[index].image = image.img
 
                     if (imageCounter===containsArray.length){
+
+                      console.log("ENd of images mapping")
 
                       container.contains = containsArray
                       //console.log(container, "<---------------------------")
