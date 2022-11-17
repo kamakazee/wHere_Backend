@@ -85,8 +85,8 @@ exports.getContainerById = (req, res, next) => {
                       console.log("ENd of images mapping")
 
                       container.contains = containsArray
-                      console.log(container, "<---------------------------")
-                      res.status(200).send(container);
+                      console.log(container.name, "<---------------------------")
+                      res.status(200).send(container.name);
 
                     }
                   })
@@ -126,8 +126,8 @@ exports.getContainerById = (req, res, next) => {
                     console.log("ENd of images mapping")
 
                     container.contains = containsArray
-                    console.log(container, "<---------------------------")
-                    res.status(200).send(container);
+                    console.log(container.name, "<---------------------------")
+                    res.status(200).send(container.name);
 
                   }
                 })
