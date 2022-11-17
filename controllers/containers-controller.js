@@ -4,6 +4,7 @@ const {
   fetchContainerById,
 } = require("../models/containers-model");
 const { fetchImageById } = require("../models/images-model");
+
 exports.getAllContainers = (req, res, next) => {
   fetchAllContainers()
     .then((containers) => {
@@ -31,12 +32,10 @@ exports.getContainerById = (req, res, next) => {
   fetchContainerById(id)
     .then((container) => {
       fetchImageById(container.image).then((image) => {
+
         container.image = image.img;
 
         const containsArray = []
-
-        //contains: ['container string1', 'container string2', items1, item2] <------------[containerobjects, contobject2] new array
-        // ['container string1', 'container string', items1, item2, containerobjects, contobject2]
 
         container.contains.map((containerId) => {
 
@@ -44,15 +43,34 @@ exports.getContainerById = (req, res, next) => {
 
           if (typeof containerId === "string") {
             getNestedContainerById(containerId).then((nestedContainer) => {
-              //console.log(nestedContainer, "Nested Container top level");
+
               containsArray.push(nestedContainer)
+              
               if (containsArray.length === container.contains.length){
-  
-                container.contains = containsArray
-  
-                console.log(container,"<<-------------------------------------");
-  
-                res.status(200).send(container);
+
+                let imageCounter = 0
+
+                containsArray.map((element, index) => {
+                  
+                  fetchImageById(element.image).then((image) => {
+
+                    imageCounter ++
+
+                    containsArray[index].image = image.img
+
+                    if (imageCounter===containsArray.length){
+
+                      container.contains = containsArray
+                      console.log(container, "<---------------------------")
+                      res.status(200).send(container);
+
+                    }
+                    
+        
+                  })
+                  
+                })
+                
               }
             })
           } else {
