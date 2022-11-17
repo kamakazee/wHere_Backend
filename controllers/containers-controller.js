@@ -70,7 +70,7 @@ exports.getContainerById = (req, res, next) => {
 
                 let imageCounter = 0
 
-                //console.log("ENd of first mapping of containers")
+                console.log("ENd of first mapping of containers")
 
                 containsArray.map((element, index) => {
                   
@@ -82,7 +82,7 @@ exports.getContainerById = (req, res, next) => {
 
                     if (imageCounter===containsArray.length){
 
-                      //console.log("ENd of images mapping")
+                      console.log("ENd of images mapping")
 
                       container.contains = containsArray
                       //console.log(container, "<---------------------------")
