@@ -29,7 +29,7 @@ exports.addContainer = (req, res, next) => {
 
 exports.getContainerById = (req, res, next) => {
 
- // console.log("Inside of getcontainerbyid")
+  console.log("Inside of getcontainerbyid")
   const { id } = req.params;
   fetchContainerById(id)
     .then((container) => {
@@ -52,7 +52,7 @@ exports.getContainerById = (req, res, next) => {
 
           if (typeof containerId === "string") {
 
-            //console.log("Is a string")
+            console.log("Is a string")
             getNestedContainerById(containerId).then((nestedContainer) => {
 
               containsArrayCount++
@@ -94,11 +94,11 @@ exports.getContainerById = (req, res, next) => {
 
             containsArrayCount++
 
-            //console.log("Is an object")
+            console.log("Is an object")
 
             containsArray.push(containerId)
 
-            //console.log("containsArrayCount: ", containsArrayCount)
+            console.log("containsArrayCount: ", containsArrayCount)
 
             if (containsArrayCount === container.contains.length){
 
