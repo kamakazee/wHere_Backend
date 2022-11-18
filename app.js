@@ -46,6 +46,40 @@ app.get("/api/containers/:id", getContainerById)
 
 // getAllItems, addItem, getItemById
 
+//post image, get image ref by id, created container with image ref and parent, find one and update parent
+
+/*app.post("/api/image").then((imageID)>{
+
+  parentId
+  imageID
+
+  post("/api/container").then((containerid)=>{
+
+    findoneandUp(parentID,  $push    contains:[containerID]).then(()=>{
+
+
+      res.send("container created:", container)
+    })
+  })
+
+
+exporrts.addContainer = (req, res, next) => {
+  postImage(image).then((image)=> {
+    postContainer(image.id).then((container)=>{
+      
+      
+    nestElement(containerid).then((container)=>{
+
+      res.send(container)
+    
+    })
+    })
+  
+  })
+}
+
+}) */
+
 app.post("/api/add_item", async (request, response) => {
   const item = new itemModel(request.body);
 
