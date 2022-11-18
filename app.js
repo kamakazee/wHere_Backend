@@ -9,14 +9,13 @@ const bodyParser = require("body-parser");
 const sharp = require ("sharp")
 const fs = require("fs");
 
-
 const { getAllUsers, addUser } = require("./controllers/user-controller")
 const {
   getAllContainers,
   addContainer,
   getContainerById,
 } = require("./controllers/containers-controller");
-const {getImageById} = require("./controllers/images-controller")
+const {getImageById, addImage} = require("./controllers/images-controller")
 
 const {
   userModel,
@@ -63,7 +62,7 @@ app.get("/api/containers/:id", getContainerById)
   })
 
 
-exporrts.addContainer = (req, res, next) => {
+exports.addContainer = (req, res, next) => {
   postImage(image).then((image)=> {
     postContainer(image.id).then((container)=>{
       
@@ -140,52 +139,53 @@ app.get("/api/images", (req, res) => {
 
 //Promisify resize function
 
-const resizeImage = async (filename)=>{
+// const resizeImage = async (filename)=>{
 
-  console.log("Inside of resize")
+//   console.log("Inside of resize")
   
-  try {
-    await sharp(__dirname + `/db/uploads/${filename}`)
-      .resize({
-        width: 640,
-        height: 480
-      })
-      .toFile(__dirname + `/db/uploads/${filename}_resized`);
-  } catch (error) {
-    console.log(error);
-  }
-}
+//   try {
+//     await sharp(__dirname + `/db/uploads/${filename}`)
+//       .resize({
+//         width: 640,
+//         height: 480
+//       })
+//       .toFile(__dirname + `/db/uploads/${filename}_resized`);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
-
-app.post("/api/image", upload.single("file"), (req, res, next) => {
-
-  console.log("Inside of post")
-
-  resizeImage(req.file.filename).then(()=>{
-
-    const obj = {
-      name: req.body.name,
-      desc: req.body.desc,
-      img: {
-        data: fs.readFileSync(
-          path.join(__dirname + "/db/uploads/" + req.file.filename +"_resized")
-        ),
-        contentType: "image/png",
-      },
-    };
+app.post("/api/image", upload.single("file"), addImage)
   
-    imageModel.create(obj, (err, item) => {
-      if (err) {
-        console.log(err);
-      } else {
-        // item.save();
-        console.log("Id of uploaded image", item._id);
-        res.send(`Id of uploaded image ${item._id}`);
-      }
-    });
-  })
+//   (req, res, next) => {
 
-});
+//   console.log("Inside of post")
+
+//   resizeImage(req.file.filename).then(()=>{
+
+//     const obj = {
+//       name: req.body.name,
+//       desc: req.body.desc,
+//       img: {
+//         data: fs.readFileSync(
+//           path.join(__dirname + "/db/uploads/" + req.file.filename +"_resized")
+//         ),
+//         contentType: "image/png",
+//       },
+//     };
+  
+//     imageModel.create(obj, (err, item) => {
+//       if (err) {
+//         console.log(err);
+//       } else {
+//         // item.save();
+//         console.log("Id of uploaded image", item._id);
+//         res.send(`Id of uploaded image ${item._id}`);
+//       }
+//     });
+//   })
+
+// });
 
 app.use((err, req, res, next) => {
   console.log("something went wrong: ", err)
