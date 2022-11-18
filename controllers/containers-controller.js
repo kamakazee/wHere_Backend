@@ -2,6 +2,8 @@ const {
   fetchAllContainers,
   postContainer,
   fetchContainerById,
+  fetchAllRooms,
+  postContainerWithParentId,
 } = require("../models/containers-model");
 const { fetchImageById } = require("../models/images-model");
 
@@ -10,6 +12,16 @@ exports.getAllContainers = (req, res, next) => {
     .then((containers) => {
       //console.log(containers);
       res.status(200).send(containers);
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getRooms = (req, res, next) => {
+  fetchAllRooms()
+    .then((rooms) => {
+      res.status(200).send(rooms);
     })
     .catch((err) => {
       next(err);
@@ -28,120 +40,91 @@ exports.addContainer = (req, res, next) => {
 };
 
 exports.getContainerById = (req, res, next) => {
-
   //console.log("Inside of getcontainerbyid")
   const { id } = req.params;
   fetchContainerById(id)
     .then((container) => {
-     // console.log("Container found: ", container)
+      // console.log("Container found: ", container)
       fetchImageById(container.image).then((image) => {
-
         container.image = image.img;
 
         //console.log("Image found:", image)
 
-        const containsArray = []
+        const containsArray = [];
 
-        let containsArrayCount=0
+        let containsArrayCount = 0;
 
         container.contains.map((containerId) => {
-
           //console.log("Container Id:", containerId)
 
-          
-
           if (typeof containerId === "string") {
-
             //console.log("Is a string")
 
             getNestedContainerById(containerId).then((nestedContainer) => {
+              containsArrayCount++;
 
-              containsArrayCount++
-
-              containsArray.push(nestedContainer)
+              containsArray.push(nestedContainer);
 
               //console.log("Size of containsArrayCount: ", containsArrayCount)
 
-              
-  
-              if (containsArrayCount === container.contains.length){
-
+              if (containsArrayCount === container.contains.length) {
                 //console.log("containersArray length", containsArray.length)
 
-                let imageCounter = 0
+                let imageCounter = 0;
 
                 //console.log("ENd of first mapping of containers")
 
                 containsArray.map((element, index) => {
-                  
                   fetchImageById(element.image).then((image) => {
+                    imageCounter++;
 
-                    imageCounter ++
+                    containsArray[index].image = image.img;
 
-                    containsArray[index].image = image.img
-
-                    if (imageCounter===containsArray.length){
-
+                    if (imageCounter === containsArray.length) {
                       //console.log("ENd of images mapping")
 
-                      container.contains = containsArray
+                      container.contains = containsArray;
                       //console.log(container, "<---------------------------")
                       res.status(200).send(container);
-
                     }
-                  })
-                  
-                })
-                
+                  });
+                });
               }
-            })
+            });
           } else {
-
-            containsArrayCount++
+            containsArrayCount++;
 
             //console.log("Is an object")
 
-            containsArray.push(containerId)
+            containsArray.push(containerId);
 
             //console.log("containsArrayCount: ", containsArrayCount)
 
-            if (containsArrayCount === container.contains.length){
+            if (containsArrayCount === container.contains.length) {
+              // console.log("containersArray length", containsArray.length)
 
-             // console.log("containersArray length", containsArray.length)
-
-              let imageCounter = 0
+              let imageCounter = 0;
 
               //console.log("ENd of first mapping of containers")
 
               containsArray.map((element, index) => {
-                
                 fetchImageById(element.image).then((image) => {
+                  imageCounter++;
 
-                  imageCounter ++
+                  containsArray[index].image = image.img;
 
-                  containsArray[index].image = image.img
-
-                  if (imageCounter===containsArray.length){
-
+                  if (imageCounter === containsArray.length) {
                     //console.log("ENd of images mapping")
 
-                    container.contains = containsArray
+                    container.contains = containsArray;
                     //console.log(container, "<---------------------------")
                     res.status(200).send(container);
-
                   }
-                })
-                
-              })
-              
+                });
+              });
             }
-
-
-
-
           }
         });
-      
       });
     })
     .catch((err) => {

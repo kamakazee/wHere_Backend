@@ -8,6 +8,10 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const sharp = require ("sharp")
 const fs = require("fs");
+const {
+  postContainer,
+  updateContainerById,
+} = require("./models/containers-model");
 
 
 const { getAllUsers, addUser } = require("./controllers/user-controller")
@@ -15,6 +19,7 @@ const {
   getAllContainers,
   addContainer,
   getContainerById,
+  getRooms,
 } = require("./controllers/containers-controller");
 const {getImageById} = require("./controllers/images-controller")
 
@@ -42,7 +47,74 @@ app.get("/api/images/:id", getImageById);
 
 app.get("/api/containers/:id", getContainerById)
 
-//getRooms don't have parent_id
+const resizeImage = async (filename) => {
+  console.log("Inside of resize");
+
+  try {
+    await sharp(__dirname + `/db/uploads/${filename}`)
+      .resize({
+        width: 640,
+        height: 480,
+      })
+      .toFile(__dirname + `/db/uploads/${filename}_resized`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const addNewContainer = (req, res, next) => {
+  console.log("Inside of post");
+
+  console.log("body", req.body);
+
+  resizeImage(req.file.filename).then(() => {
+    console.log("Back to model");
+
+    const obj = {
+      name: req.body.name,
+      desc: req.body.desc,
+      img: {
+        data: fs.readFileSync(
+          path.join(__dirname + "/db/uploads/" + req.file.filename + "_resized")
+        ),
+        contentType: "image/png",
+      },
+    };
+
+    imageModel.create(obj, (err, item) => {
+      if (err) {
+        console.log(err);
+      } else {
+        // item.save();
+        console.log("Id of uploaded image", item._id);
+        //res.send(`Id of uploaded image ${item._id}`);
+
+        const containerbody = {
+          name: req.body.name,
+          description: req.body.desc,
+          parent_id: req.params.parent_id,
+          image: item._id,
+        };
+
+        postContainer(containerbody).then((container) => {
+          console.log(container);
+
+          updateContainerById(req.params.parent_id, container._id).then(
+            (container_id) => {
+              res.send(`new container created: ${container_id}`);
+            }
+          );
+
+          //res.send(container.name)
+        });
+      }
+    });
+  });
+};
+
+app.post("/api/containers/addcontainer/:parent_id", upload.single("file"), addNewContainer);
+
+app.get("/api/rooms", getRooms)
 
 // getAllItems, addItem, getItemById
 
@@ -77,6 +149,19 @@ exporrts.addContainer = (req, res, next) => {
   
   })
 }
+
+app.post("/api/containers/addcontainer/:parent_id")
+
+insominia
+
+file  (pick a file)
+
+name: container-name
+description:
+
+
+parent_id
+contains
 
 }) */
 
@@ -139,23 +224,6 @@ app.get("/api/images", (req, res) => {
 });
 
 //Promisify resize function
-
-const resizeImage = async (filename)=>{
-
-  console.log("Inside of resize")
-  
-  try {
-    await sharp(__dirname + `/db/uploads/${filename}`)
-      .resize({
-        width: 640,
-        height: 480
-      })
-      .toFile(__dirname + `/db/uploads/${filename}_resized`);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 
 app.post("/api/image", upload.single("file"), (req, res, next) => {
 
