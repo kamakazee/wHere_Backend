@@ -21,7 +21,7 @@ const {
   getContainerById,
   getRooms,
 } = require("./controllers/containers-controller");
-const {getImageById} = require("./controllers/images-controller")
+const {getImageById, addImage} = require("./controllers/images-controller")
 
 const {
   userModel,
@@ -225,35 +225,37 @@ app.get("/api/images", (req, res) => {
 
 //Promisify resize function
 
-app.post("/api/image", upload.single("file"), (req, res, next) => {
+// app.post("/api/image", upload.single("file"), (req, res, next) => {
 
-  console.log("Inside of post")
+//   console.log("Inside of post")
 
-  resizeImage(req.file.filename).then(()=>{
+//   resizeImage(req.file.filename).then(()=>{
 
-    const obj = {
-      name: req.body.name,
-      desc: req.body.desc,
-      img: {
-        data: fs.readFileSync(
-          path.join(__dirname + "/db/uploads/" + req.file.filename +"_resized")
-        ),
-        contentType: "image/png",
-      },
-    };
+//     const obj = {
+//       name: req.body.name,
+//       desc: req.body.desc,
+//       img: {
+//         data: fs.readFileSync(
+//           path.join(__dirname + "/db/uploads/" + req.file.filename +"_resized")
+//         ),
+//         contentType: "image/png",
+//       },
+//     };
   
-    imageModel.create(obj, (err, item) => {
-      if (err) {
-        console.log(err);
-      } else {
-        // item.save();
-        console.log("Id of uploaded image", item._id);
-        res.send(`Id of uploaded image ${item._id}`);
-      }
-    });
-  })
+//     imageModel.create(obj, (err, item) => {
+//       if (err) {
+//         console.log(err);
+//       } else {
+//         // item.save();
+//         console.log("Id of uploaded image", item._id);
+//         res.send(`Id of uploaded image ${item._id}`);
+//       }
+//     });
+//   })
 
-});
+// });
+
+app.post("/api/image", upload.single("file"), addImage);
 
 app.use((err, req, res, next) => {
   console.log("something went wrong: ", err)
