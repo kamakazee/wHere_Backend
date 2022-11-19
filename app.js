@@ -10,6 +10,7 @@ const sharp = require ("sharp")
 const fs = require("fs");
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3()
+const multer = require("multer");
 
 
 
@@ -302,16 +303,19 @@ const resizeS3Image = async (buffer) => {
   }
 };
 
-app.post('/upload', uploadS3.single('file'), function(req, res, next) {
+const storage = multer.memoryStorage()
+const uploadBuffer = multer({ storage: storage })
 
-  console.log("File uploaded", req.file)
+app.post('/upload', uploadBuffer.single('file'), function(req, res, next) {
 
-  getfile(req.file.key).then((s3File)=>{
+  console.log("File uploaded", req.file.buffer)
+
+  // getfile(req.file.key).then((s3File)=>{
 
 
-    console.log(s3File.Body)
+    // console.log(s3File.Body)
     
-    resizeS3Image(s3File.Body).then((resized)=>{
+    resizeS3Image(req.file.buffer).then((resized)=>{
 
       console.log("return from resized image",resized.buffer)
 
@@ -321,7 +325,7 @@ app.post('/upload', uploadS3.single('file'), function(req, res, next) {
         })
     })
 
-  })
+  // })
 })
 
 
