@@ -91,7 +91,7 @@ const addNewContainer = (req, res, next) => {
 
         const containerbody = {
           name: req.body.name,
-          description: req.body.desc,
+          description: req.body.description,
           parent_id: req.params.parent_id,
           image: item._id,
         };
