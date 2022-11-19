@@ -3,11 +3,16 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config({ path: "./config.env" });
 const connection = require("./db/connection")
-const upload = require("./db/upload");
+const {upload, uploadS3} = require("./db/upload");
 const path = require("path");
 const bodyParser = require("body-parser");
 const sharp = require ("sharp")
 const fs = require("fs");
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3()
+
+
+
 const {
   postContainer,
   updateContainerById,
@@ -223,44 +228,102 @@ app.get("/api/images", (req, res) => {
   });
 });
 
-//Promisify resize function
-
-// app.post("/api/image", upload.single("file"), (req, res, next) => {
-
-//   console.log("Inside of post")
-
-//   resizeImage(req.file.filename).then(()=>{
-
-//     const obj = {
-//       name: req.body.name,
-//       desc: req.body.desc,
-//       img: {
-//         data: fs.readFileSync(
-//           path.join(__dirname + "/db/uploads/" + req.file.filename +"_resized")
-//         ),
-//         contentType: "image/png",
-//       },
-//     };
-  
-//     imageModel.create(obj, (err, item) => {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         // item.save();
-//         console.log("Id of uploaded image", item._id);
-//         res.send(`Id of uploaded image ${item._id}`);
-//       }
-//     });
-//   })
-
-// });
-
 app.post("/api/image", upload.single("file"), addImage);
 
 app.use((err, req, res, next) => {
   console.log("something went wrong: ", err)
   
 })
+
+
+const getfile = async (filename)=>{
+
+  try {
+    let s3File = await s3.getObject({
+      Bucket: process.env.BUCKET,
+      Key: filename,
+    }).promise()
+
+    // res.set('Content-type', s3File.ContentType)
+    // res.send(s3File.Body.toString()).end()
+    return s3File
+  } catch (error) {
+    if (error.code === 'NoSuchKey') {
+      console.log(`No such key ${filename}`)
+      return error
+    } else {
+      console.log(error)
+      return error
+    }
+  }
+}
+
+
+const postS3Image = async (name, data)=>{
+
+  console.log("Inside model of add image, data is: ", data)
+
+  const imageBody = {
+    name: name,
+    img: {
+      data: Buffer.from(data),
+      contentType: "image/png",
+    },
+  };
+
+  console.log("Construct new image object,:", imageBody)
+
+  const newImage = new imageModel(imageBody);
+
+  try {
+    await newImage.save();
+
+    console.log("New image created", newImage._id)
+    console.log(newImage)
+
+    return newImage._id;
+  } catch (error) {
+    return error;
+  }
+}
+const resizeS3Image = async (buffer) => {
+
+  console.log("Inside of resize3 image: ", buffer);
+
+  try {
+     return await sharp(buffer)
+      .resize({
+        width: 640,
+        height: 480,
+      }).toBuffer();
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+app.post('/upload', uploadS3.single('file'), function(req, res, next) {
+
+  console.log("File uploaded", req.file)
+
+  getfile(req.file.key).then((s3File)=>{
+
+
+    console.log(s3File.Body)
+    
+    resizeS3Image(s3File.Body).then((resized)=>{
+
+      console.log("return from resized image",resized.buffer)
+
+      postS3Image(req.body.name, resized.buffer).then((imageId)=>{
+
+          res.send(`New image created: ${imageId}`)
+        })
+    })
+
+  })
+})
+
 
 connection();
 

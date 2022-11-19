@@ -47,7 +47,7 @@ exports.postImage = async (name, filename)=>{
   try {
     await newImage.save();
 
-    //console.log("New image created", newImage._id)
+    console.log("New image created", newImage)
 
     return newImage._id;
   } catch (error) {
