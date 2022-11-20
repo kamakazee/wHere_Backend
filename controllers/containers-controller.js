@@ -168,7 +168,6 @@ exports.addNewContainer = (req, res, next) => {
   const containerParentId = req.params.parent_id
 
   resizeBufferedImage(req.file.buffer).then((resized) => {
-    //console.log("Back to model");
 
     postBufferedImage(containerName, resized.buffer).then((imageId)=>{
 
