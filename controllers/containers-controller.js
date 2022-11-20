@@ -3,9 +3,11 @@ const {
   postContainer,
   fetchContainerById,
   fetchAllRooms,
-  postContainerWithParentId,
+  postContainerWithParentId, updateContainerById
 } = require("../models/containers-model");
-const { fetchImageById } = require("../models/images-model");
+const { fetchImageById,postBufferedImage  } = require("../models/images-model");
+const sharp = require ("sharp")
+const { imageModel } = require("../schema/schema.js");
 
 exports.getAllContainers = (req, res, next) => {
   fetchAllContainers()
@@ -140,4 +142,47 @@ const getNestedContainerById = (id) => {
     .catch((err) => {
       next(err);
     });
+};
+
+
+const resizeBufferedImage = async (buffer) => {
+
+  console.log("Inside of resize3 image: ", buffer);
+
+  try {
+     return await sharp(buffer)
+      .resize({
+        width: 640,
+        height: 480,
+      }).toBuffer();
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.addNewContainer = (req, res, next) => {
+
+  const containerName = req.body.name
+  const containerDescription =  req.body.description
+  const containerParentId = req.params.parent_id
+
+  resizeBufferedImage(req.file.buffer).then((resized) => {
+    //console.log("Back to model");
+
+    postBufferedImage(containerName, resized.buffer).then((imageId)=>{
+
+
+      postContainerWithParentId(containerName, containerDescription, containerParentId, imageId).then((container_id)=>{
+
+
+        console.log(`new container created in controller: ${container_id}`);
+
+        res.send(`new container created: ${container_id}`);
+
+      })
+
+    })
+
+  });
 };

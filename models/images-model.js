@@ -1,9 +1,5 @@
 const { imageModel } = require("../schema/schema.js");
 
-const fs = require("fs");
-const path = require("path");
-
-
 exports.fetchImageById = async (id) => {
   try {
     const imageById = await imageModel.findById(id);
@@ -23,36 +19,30 @@ exports.fetchImageById = async (id) => {
   }
 };
 
+exports.postBufferedImage = async (name, data)=>{
 
-
-
-exports.postImage = async (name, filename)=>{
-
-  //console.log("Inside model of add image")
+  console.log("Inside model of add image, data is: ", data)
 
   const imageBody = {
     name: name,
     img: {
-      data: fs.readFileSync(
-        path.join(__dirname, '..', 'db','uploads', `${filename}_resized`)
-      ),
+      data: Buffer.from(data),
       contentType: "image/png",
     },
   };
 
-  //console.log("Construct new image object,:", imageBody)
+  console.log("Construct new image object,:", imageBody)
 
   const newImage = new imageModel(imageBody);
 
   try {
     await newImage.save();
 
-    console.log("New image created", newImage)
+    console.log("New image created", newImage._id)
+    console.log(newImage)
 
     return newImage._id;
   } catch (error) {
     return error;
   }
-
-
 }

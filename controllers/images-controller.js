@@ -1,4 +1,4 @@
-const { fetchImageById, postImage } = require("../models/images-model");
+const { fetchImageById, postBufferedImage } = require("../models/images-model");
 
 const fs = require("fs");
 
@@ -6,6 +6,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const sharp = require ("sharp")
 
+const { imageModel } = require("../schema/schema.js");
 
 exports.getImageById = (req, res, next) => {
   const { id } = req.params;
@@ -15,34 +16,31 @@ exports.getImageById = (req, res, next) => {
   });
 };
 
-const resizeImage = async (filename) => {
-  //console.log("Inside of resize");
+const resizeBufferedImage = async (buffer) => {
+
+  console.log("Inside of resize3 image: ", buffer);
 
   try {
-    await sharp(path.join(__dirname, '..', 'db','uploads', `${filename}`))
+     return await sharp(buffer)
       .resize({
         width: 640,
         height: 480,
-      })
-      .toFile(path.join(__dirname, '..', 'db','uploads', `${filename}_resized`));
+      }).toBuffer();
+
   } catch (error) {
     console.log(error);
   }
 };
 
+exports.addBufferedImage = (req, res, next)=> {
+    
+  resizeBufferedImage(req.file.buffer).then((resized)=>{
 
-exports.addImage = (req, res, next) =>{
+    console.log("return from resized image",resized.buffer)
 
-  //console.log("Inside of post")
+    postBufferedImage(req.body.name, resized.buffer).then((imageId)=>{
 
-  resizeImage(req.file.filename).then(()=>{
-
-    postImage(req.body.name, req.file.filename ).then((imageId)=>{
-
-      res.send(`New image created: ${imageId}`)
-
-    })
-
+        res.send(`New image created: ${imageId}`)
+      })
   })
-
 }
