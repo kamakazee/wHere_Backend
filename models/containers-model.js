@@ -40,15 +40,12 @@ const postContainer = async (containerBody) => {
 };
 
 const updateContainerById = async (parent_id, container_id) => {
-  console.log(parent_id);
 
   try {
     await containerModel.findOneAndUpdate(
       { _id: parent_id },
       { $push: { contains: container_id.toString() } }
     );
-
-    console.log("Id to pass back: ", container_id.toString())
 
     return container_id.toString();
   } catch (error) {
@@ -67,15 +64,11 @@ exports.postContainerWithParentId = async (name, description, parentId, imageId)
   };
 
   return postContainer(containerbody).then((container) => {
-    console.log(container);
 
     return updateContainerById(parentId, container._id)
 
-    //res.send(container.name)
   }).then(
     (container_id) => {
-
-      console.log(`new container created: ${container_id}`);
 
       return container_id
     }

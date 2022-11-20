@@ -157,7 +157,7 @@ const resizeBufferedImage = async (buffer) => {
       }).toBuffer();
 
   } catch (error) {
-    console.log(error);
+    return error
   }
 };
 
@@ -171,11 +171,7 @@ exports.addNewContainer = (req, res, next) => {
 
     postBufferedImage(containerName, resized.buffer).then((imageId)=>{
 
-
       postContainerWithParentId(containerName, containerDescription, containerParentId, imageId).then((container_id)=>{
-
-
-        console.log(`new container created in controller: ${container_id}`);
 
         res.send(`new container created: ${container_id}`);
 
