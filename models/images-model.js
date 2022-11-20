@@ -18,3 +18,31 @@ exports.fetchImageById = async (id) => {
     return error;
   }
 };
+
+exports.postBufferedImage = async (name, data)=>{
+
+  console.log("Inside model of add image, data is: ", data)
+
+  const imageBody = {
+    name: name,
+    img: {
+      data: Buffer.from(data),
+      contentType: "image/png",
+    },
+  };
+
+  console.log("Construct new image object,:", imageBody)
+
+  const newImage = new imageModel(imageBody);
+
+  try {
+    await newImage.save();
+
+    console.log("New image created", newImage._id)
+    console.log(newImage)
+
+    return newImage._id;
+  } catch (error) {
+    return error;
+  }
+}
