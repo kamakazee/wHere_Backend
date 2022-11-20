@@ -1,4 +1,6 @@
-const { fetchAllItems } = require("../models/items-model")
+const { fetchAllItems, postItemWithParentId } = require("../models/items-model")
+const { postBufferedImage  } = require("../models/images-model");
+const {resizeBufferedImage} = require("../db/upload.js")
 
 
 exports.getAllItems = (req, res, next) => {
@@ -10,3 +12,24 @@ exports.getAllItems = (req, res, next) => {
         return err
     })
 }
+
+exports.addNewItem = (req, res, next) => {
+
+    const itemName = req.body.name
+    const itemDescription =  req.body.description
+    const itemParentId = req.params.parent_id
+  
+    resizeBufferedImage(req.file.buffer).then((resized) => {
+  
+      postBufferedImage(itemName, resized.buffer).then((imageId)=>{
+  
+        postItemWithParentId(itemName, itemDescription, itemParentId, imageId).then((item_id)=>{
+  
+          res.send(`new item created: ${item_id}`);
+  
+        })
+  
+      })
+  
+    });
+  };

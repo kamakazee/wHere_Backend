@@ -48,7 +48,7 @@ app.get("/api/rooms", getRooms)
 
 app.post("/api/containers/addcontainer/:parent_id", uploadBuffer.single("file"), addNewContainer); //use this one to add a new container
 
-// app.post("/api/items/addItem/:parent_id", uploadBuffer.single("file"), addNewItem); 
+app.post("/api/items/addItem/:parent_id", uploadBuffer.single("file"), addNewItem); 
 
 app.get("/api/rooms", getRooms)
 
