@@ -10,11 +10,12 @@ exports.fetchAllItems = async () => {
 }
 
 const postItem = async (itemBody) => {
-  const item = new itemModel(itemBody);
+
+  
 
   try {
-    await item.save();
-    return item;
+    const newItem = await itemModel.create(itemBody);
+    return newItem;
   } catch (error) {
     return error;
   }
