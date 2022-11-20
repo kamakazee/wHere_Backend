@@ -5,8 +5,8 @@ require("dotenv").config({ path: "./config.env" });
 const connection = require("./db/connection")
 const multer = require("multer");
 
-
 const { getAllUsers, addUser } = require("./controllers/user-controller")
+
 const {
   getAllContainers,
   addContainer,
@@ -14,6 +14,8 @@ const {
   getRooms, addNewContainer
 } = require("./controllers/containers-controller");
 const {getImageById, addBufferedImage} = require("./controllers/images-controller")
+
+const {getAllItems} = require("./controllers/items-container")
 
 const {
   containerModel,
@@ -35,7 +37,7 @@ app.post("/api/add_user", addUser);
 
 app.get("/api/containers", getAllContainers);
 
-app.post("/api/add_container", addContainer);
+app.post("/api/add_container", addContainer); //don't use this one to add new containers
 
 app.get("/api/images/:id", getImageById);
 
@@ -44,6 +46,15 @@ app.get("/api/containers/:id", getContainerById)
 app.post("/api/containers/addcontainer/:parent_id", uploadBuffer.single("file"), addNewContainer);
 
 app.get("/api/rooms", getRooms)
+
+app.post("/api/containers/addcontainer/:parent_id", uploadBuffer.single("file"), addNewContainer); //use this one to add a new container
+
+app.get("/api/rooms", getRooms)
+
+app.get("/api/items", getAllItems)
+
+// getAllItems, addItem, getItemById
+
 
 app.post("/api/add_item", async (request, response) => {
   const item = new itemModel(request.body);
@@ -109,7 +120,6 @@ app.use((err, req, res, next) => {
   console.log("something went wrong: ", err)
   
 })
-
 
 
 app.post('/api/image', uploadBuffer.single('file'), addBufferedImage)
