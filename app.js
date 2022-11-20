@@ -111,8 +111,6 @@ app.get("/api/images", (req, res) => {
         imagesArray.push(imageObject);
       });
 
-      //console.log(imagesArray[0])
-
       res.send(imagesArray);
     }
   });
