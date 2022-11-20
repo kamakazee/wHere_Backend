@@ -21,7 +21,6 @@ exports.fetchImageById = async (id) => {
 
 exports.postBufferedImage = async (name, data)=>{
 
-  console.log("Inside model of add image, data is: ", data)
 
   const imageBody = {
     name: name,
@@ -31,15 +30,10 @@ exports.postBufferedImage = async (name, data)=>{
     },
   };
 
-  console.log("Construct new image object,:", imageBody)
-
   const newImage = new imageModel(imageBody);
 
   try {
     await newImage.save();
-
-    console.log("New image created", newImage._id)
-    console.log(newImage)
 
     return newImage._id;
   } catch (error) {
