@@ -15,7 +15,7 @@ const {
 } = require("./controllers/containers-controller");
 const {getImageById, addBufferedImage} = require("./controllers/images-controller")
 
-const {getAllItems} = require("./controllers/items-container")
+const {getAllItems, addNewItem} = require("./controllers/items-container")
 
 const {
   containerModel,
@@ -29,6 +29,7 @@ const uploadBuffer = multer({ storage: storage })
 const app = express();
 
 app.use(cors());
+
 app.use(express.json());
 
 app.get("/api/users", getAllUsers);
@@ -47,9 +48,14 @@ app.get("/api/rooms", getRooms)
 
 app.post("/api/containers/addcontainer/:parent_id", uploadBuffer.single("file"), addNewContainer); //use this one to add a new container
 
+// app.post("/api/items/addItem/:parent_id", uploadBuffer.single("file"), addNewItem); 
+
 app.get("/api/rooms", getRooms)
 
 app.get("/api/items", getAllItems)
+
+app.post('/api/image', uploadBuffer.single('file'), addBufferedImage)
+
 
 // getAllItems, addItem, getItemById
 
@@ -118,10 +124,6 @@ app.use((err, req, res, next) => {
   console.log("something went wrong: ", err)
   
 })
-
-
-app.post('/api/image', uploadBuffer.single('file'), addBufferedImage)
-
 
 connection();
 
