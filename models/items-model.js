@@ -11,11 +11,13 @@ exports.fetchAllItems = async () => {
 
 const postItem = async (itemBody) => {
 
-  
 
+  const item = new itemModel(itemBody);
+
+  
   try {
-    const newItem = await itemModel.create(itemBody);
-    return newItem;
+    // const newItem = await itemModel.create(itemBody);
+    return item;
   } catch (error) {
     return error;
   }
