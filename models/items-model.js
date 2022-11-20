@@ -16,7 +16,7 @@ const postItem = async (itemBody) => {
 
   
   try {
-    // const newItem = await itemModel.create(itemBody);
+
     return item;
   } catch (error) {
     return error;
