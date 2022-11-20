@@ -7,7 +7,7 @@ const {
 } = require("../models/containers-model");
 const { fetchImageById,postBufferedImage  } = require("../models/images-model");
 const sharp = require ("sharp")
-const { imageModel } = require("../schema/schema.js");
+const {resizeBufferedImage} = require("../db/upload.js")
 
 exports.getAllContainers = (req, res, next) => {
   fetchAllContainers()
@@ -142,23 +142,6 @@ const getNestedContainerById = (id) => {
     .catch((err) => {
       next(err);
     });
-};
-
-
-const resizeBufferedImage = async (buffer) => {
-
-  console.log("Inside of resize3 image: ", buffer);
-
-  try {
-     return await sharp(buffer)
-      .resize({
-        width: 640,
-        height: 480,
-      }).toBuffer();
-
-  } catch (error) {
-    return error
-  }
 };
 
 exports.addNewContainer = (req, res, next) => {

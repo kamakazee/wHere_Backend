@@ -40,14 +40,19 @@ const ItemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  isContainer: {
-    type: Boolean,
-    default: true,
+  description: {
+    type: String,
+    default: "",
   },
-  imageUrl: {
+  image: {
     type: String,
     default: "defaultImage",
   },
+  parent_id: {
+    type: String,
+    default: "",
+  },
+
 });
 
 var imageSchema = new mongoose.Schema({
