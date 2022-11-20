@@ -43,8 +43,6 @@ app.get("/api/images/:id", getImageById);
 
 app.get("/api/containers/:id", getContainerById)
 
-app.post("/api/containers/addcontainer/:parent_id", uploadBuffer.single("file"), addNewContainer);
-
 app.get("/api/rooms", getRooms)
 
 app.post("/api/containers/addcontainer/:parent_id", uploadBuffer.single("file"), addNewContainer); //use this one to add a new container
