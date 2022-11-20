@@ -39,17 +39,10 @@ exports.addNewItem = (req, res, next) => {
 
     const {parent_id, item_id} = req.body
 
-    //console.log("parent_id, item_id: ", parent_id, item_id)
 
     fetchContainerById(parent_id).then((container)=>{
 
-      //console.log("parent found: ", container)
-
-      
-
       deleteItemFromContainer(container, item_id).then((item_id)=>{
-
-        //console.log("Item removed: ", item_id)
 
         res.send(`item removed: ${item_id}`)
       })
