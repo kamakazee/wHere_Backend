@@ -1,4 +1,5 @@
 const { containerModel } = require("../schema/schema.js");
+const {deleteImageById} = require ("./images-model.js")
 
 exports.fetchAllContainers = async () => {
   try {
@@ -74,4 +75,40 @@ exports.postContainerWithParentId = async (name, description, parentId, imageId)
     }
   );
 
+}
+
+exports.deleteItemFromContainer = async (container, item_id)=>{
+
+  let indexOfItem = 0
+  let item ={}
+
+      container.contains.forEach((element, index)=>{
+        if (typeof element ==="object" && element._id.toString()===item_id){
+
+          //console.log("Object id:", element._id.toString())
+          indexOfItem = index
+          item = element
+
+        }
+      })
+
+      //console.log("Index of item: ", indexOfItem)
+
+      container.contains.splice(indexOfItem,1)
+
+      //console.log("new contains: ", container.contains)
+
+      await container.save()
+
+      //now delete image
+
+      return deleteImageById(item.image).then((imageid)=>{
+
+        //console.log("deleted image: ", imageid)
+
+        return item_id
+
+      })
+
+      
 }

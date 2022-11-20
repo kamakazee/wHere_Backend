@@ -40,3 +40,18 @@ exports.postBufferedImage = async (name, data)=>{
     return error;
   }
 }
+
+exports.deleteImageById = async (imageId)=>{
+
+
+  try {
+    await imageModel.findOneAndDelete(
+      { _id: imageId }
+    );
+
+    return imageId;
+  } catch (error) {
+    return error
+  }
+
+}
