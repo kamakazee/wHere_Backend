@@ -11,11 +11,11 @@ const {
   getAllContainers,
   addContainer,
   getContainerById,
-  getRooms, addNewContainer
+  getRooms, addNewContainer, removeContainer
 } = require("./controllers/containers-controller");
 const {getImageById, addBufferedImage} = require("./controllers/images-controller")
 
-const {getAllItems, addNewItem, removeItem} = require("./controllers/items-container")
+const {getAllItems, addNewItem, removeItem} = require("./controllers/items-controller")
 
 const {
   containerModel,
@@ -57,6 +57,8 @@ app.get("/api/items", getAllItems)
 app.post('/api/image', uploadBuffer.single('file'), addBufferedImage)
 
 app.delete("/api/item", removeItem)
+
+app.delete("/api/container/:container_id", removeContainer)
 
 
 // getAllItems, addItem, getItemById

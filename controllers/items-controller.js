@@ -42,11 +42,13 @@ exports.addNewItem = (req, res, next) => {
 
     fetchContainerById(parent_id).then((container)=>{
 
-      deleteItemFromContainer(container, item_id).then((item_id)=>{
+      return deleteItemFromContainer(container, item_id).then((item_id)=>{
 
         res.send(`item removed: ${item_id}`)
       })
 
+    }).catch((error)=>{
 
+      res.status(404).send("Item was not deleted")
     })
   }

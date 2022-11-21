@@ -79,7 +79,7 @@ exports.postContainerWithParentId = async (name, description, parentId, imageId)
 
 exports.deleteItemFromContainer = async (container, item_id)=>{
 
-  let indexOfItem = 0
+  let indexOfItem = undefined
   let item ={}
 
       container.contains.forEach((element, index)=>{
@@ -91,16 +91,27 @@ exports.deleteItemFromContainer = async (container, item_id)=>{
         }
       })
 
-      container.contains.splice(indexOfItem,1)
+      console.log("Index of item: ", indexOfItem)
 
-      await container.save()
+      if (indexOfItem!==undefined){
 
-      return deleteImageById(item.image).then((imageid)=>{
+        container.contains.splice(indexOfItem,1)
 
+        await container.save()
+  
+        return deleteImageById(item.image).then((imageid)=>{
+  
+  
+          return item_id
+  
+        })
 
-        return item_id
+      }else{
 
-      })
+        return Promise.reject({msg: "failed"})
 
-      
+      }
+
+  
+
 }

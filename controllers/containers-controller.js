@@ -168,3 +168,11 @@ exports.addNewContainer = (req, res, next) => {
 
   });
 };
+
+exports.removeContainer = (req, res, next)=>{
+
+  //find containerbyid and return
+  //extract contains array
+
+
+}
