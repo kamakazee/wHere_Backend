@@ -123,23 +123,15 @@ exports.deleteItemFromContainer = async (container, item_id)=>{
 
 exports.pushArrayIntoParentContainer = async (parent_id, containsArray, container_id)=>{
 
-  console.log("Inside push to parents array: ", containsArray)
-  console.log("Parent id to find: ", parent_id)
-
-
   try {
-
-    console.log("Inside of try")
     
     const parentContainer = await containerModel.findById(parent_id)
 
-    console.log("Parent container: ", parentContainer)
-
+    if(containsArray.length>0){
     containsArray.forEach((element)=>{
       parentContainer.contains.push(element)
     })
-
-    console.log("contains of parent container: ", parentContainer.contains)
+    }
 
     let indexOfContainer = undefined
 
@@ -148,8 +140,6 @@ exports.pushArrayIntoParentContainer = async (parent_id, containsArray, containe
         indexOfContainer = index
       }
     })
-
-    console.log("Index of container: "), indexOfContainer
 
     parentContainer.contains.splice(indexOfContainer,1)
 
@@ -163,6 +153,7 @@ exports.pushArrayIntoParentContainer = async (parent_id, containsArray, containe
   } catch (error) {
     return error
   }
+
 
 
 }
