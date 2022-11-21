@@ -48,6 +48,10 @@ exports.getContainerById = (req, res, next) => {
     .then((container) => {
       // console.log("Container found: ", container)
       fetchImageById(container.image).then((image) => {
+
+        if (container.contains.length===0){
+          res.send(container)
+        }
         container.image = image.img;
 
         //console.log("Image found:", image)
