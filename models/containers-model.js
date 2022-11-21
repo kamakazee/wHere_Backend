@@ -106,7 +106,6 @@ exports.deleteItemFromContainer = async (container, item_id)=>{
   
         return deleteImageById(item.image).then((imageid)=>{
   
-  
           return item_id
   
         })
@@ -116,45 +115,114 @@ exports.deleteItemFromContainer = async (container, item_id)=>{
         return Promise.reject({msg: "failed"})
 
       }
-
-  
-
 }
 
 exports.pushArrayIntoParentContainer = async (parent_id, containsArray, container_id)=>{
 
   try {
+
+    console.log("containsArray: ", containsArray)
     
     const parentContainer = await containerModel.findById(parent_id)
 
-    if(containsArray.length>0){
-    containsArray.forEach((element)=>{
-      parentContainer.contains.push(element)
-    })
+    // var bar = new Promise((resolve, reject) => {
+    //   containsArray.forEach((element, index) => {
+
+    //     if (typeof element === "object") {
+    //       containsArray[index].parent_id = parent_id
+    //     } else {
+  
+    //       updateParentContainer(container_id, parent_id)
+    //     }
+    //   })
+    // });
+
+    if (containsArray.length > 0) {
+
+      containsArray.forEach((element) => {
+        parentContainer.contains.push(element)
+      })
+
+      parentContainer.contains.forEach((element, index) => {
+            if (typeof element === "string" && element === container_id) {
+              indexOfContainer = index
+            }
+          })
+
+      let promisesArray = []
+
+      containsArray.forEach((element, index) => {
+
+            if (typeof element === "object") {
+              containsArray[index].parent_id = parent_id
+            } else {     
+              promisesArray.push(updateParentContainer(container_id, parent_id))
+            }
+          })
+
+      console.log("promisesArray: ", promisesArray)
+      
+      Promise.all(promisesArray).then( async (results)=>{
+
+        console.log("Promises complete")
+
+        let indexOfContainer = undefined
+
+        parentContainer.contains.forEach((element, index)=>{
+          if(typeof element === "string" && element === container_id){
+            indexOfContainer = index
+          }
+        })
+    
+        parentContainer.contains.splice(indexOfContainer,1)
+    
+        await parentContainer.save()
+    
+        return parent_id;
+        
+      })
+
+      
+
+      // bar().then(async () => {
+        
+      //   console.log('All done!');
+
+      //   let indexOfContainer = undefined
+
+      //   parentContainer.contains.forEach((element, index) => {
+      //     if (typeof element === "string" && element === container_id) {
+      //       indexOfContainer = index
+      //     }
+      //   })
+      
+      //   parentContainer.contains.splice(indexOfContainer, 1)
+      
+      //   await parentContainer.save()
+
+      //   return parent_id;
+
+      // });
+    } else {
+      
+      let indexOfContainer = undefined
+
+      parentContainer.contains.forEach((element, index)=>{
+        if(typeof element === "string" && element === container_id){
+          indexOfContainer = index
+        }
+      })
+  
+      parentContainer.contains.splice(indexOfContainer,1)
+  
+      await parentContainer.save()
+  
+      return parent_id;
+      
     }
-
-    let indexOfContainer = undefined
-
-    parentContainer.contains.forEach((element, index)=>{
-      if(typeof element === "string" && element === container_id){
-        indexOfContainer = index
-      }
-    })
-
-    parentContainer.contains.splice(indexOfContainer,1)
-
-    await parentContainer.save()
-
-    // await containerModel.findOneAndUpdate(
-    //   { _id: parent_id }, {  contains: [...parentContainer.contains, ...containsArray] }
-    // );
-    //   // [...parent_id.contains, ...containsArray]
-    return parent_id;
   } catch (error) {
     return error
   }
-
-
 
 }
 
@@ -169,8 +237,19 @@ exports.deleteContainerById = async (container_id)=>{
     return container_id;
   } catch (error) {
     return error
-  }
+  }  
+}
 
+const updateParentContainer = async (container_id, parent_id)=>{
 
-  
+  try {
+    await containerModel.findOneAndUpdate(
+      { _id: container_id }, {parent_id: parent_id}
+    );
+
+    return container_id;
+  } catch (error) {
+    return error
+  }  
+
 }

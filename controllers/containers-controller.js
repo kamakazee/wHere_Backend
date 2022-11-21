@@ -191,7 +191,7 @@ exports.removeContainer = (req, res, next)=>{
       deleteContainerById(container_id).then((container_id)=>{
 
         deleteImageById(container.image).then((image_id)=>{
-
+          // {containsArray.forEach(item =>  patchParent_idByItem_id(parent_id, item._id))
           res.send(`Container ${container_id} removed!!`)
         }).catch(() => res.status(404).send("Unable to delete image"))
       }).catch(()=>{
