@@ -183,7 +183,7 @@ exports.removeContainer = (req, res, next)=>{
 
   let containsArray = []
 
-  fetchContainerById(container_id).then((container) => {
+  return fetchContainerById(container_id).then((container) => {
 
     console.log(container)
 
@@ -192,20 +192,24 @@ exports.removeContainer = (req, res, next)=>{
     console.log("containsArray: ", containsArray)
     console.log("Parent id: ", container.parent_id)
 
-    pushArrayIntoParentContainer(container.parent_id, containsArray, container_id).then((parent_id)=>{
+    return pushArrayIntoParentContainer(container.parent_id, containsArray, container_id).then((parent_id)=>{
 
       deleteContainerById(container_id).then((container_id)=>{
 
-
         deleteImageById(container.image).then((image_id)=>{
 
-
-
           res.send(`Container ${container_id} removed!!`)
-        })
+        }).catch(() => res.status(404).send("Unable to delete image"))
+      }).catch(()=>{
+        res.status(404).send("Unable to delete container")
       })
+    }).catch(()=>{
+      res.status(404).send("Unable to push items to parent container")
     })
 
+  }).catch(()=>{
+
+    res.status(404).send("Container doesn't exist")
 
   })
 
