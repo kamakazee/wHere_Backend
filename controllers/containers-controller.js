@@ -172,12 +172,6 @@ exports.addNewContainer = (req, res, next) => {
 
 exports.removeContainer = (req, res, next)=>{
 
-  //find containerbyid and return
-  //extract contains array, save it to be added to its parent
-  //findOneAndUpdate push array items into contains of parent
-  //delete container
-  //delete image
-
   const { container_id } = req.params
   console.log(container_id)
 
