@@ -3,9 +3,10 @@ const {
   postContainer,
   fetchContainerById,
   fetchAllRooms,
-  postContainerWithParentId, updateContainerById
+  postContainerWithParentId, updateContainerById, pushArrayIntoParentContainer, deleteItemFromContainer,
+  deleteContainerById
 } = require("../models/containers-model");
-const { fetchImageById,postBufferedImage  } = require("../models/images-model");
+const { fetchImageById,postBufferedImage, deleteImageById  } = require("../models/images-model");
 const sharp = require ("sharp")
 const {resizeBufferedImage} = require("../db/upload.js")
 
@@ -172,7 +173,43 @@ exports.addNewContainer = (req, res, next) => {
 exports.removeContainer = (req, res, next)=>{
 
   //find containerbyid and return
-  //extract contains array
+  //extract contains array, save it to be added to its parent
+  //findOneAndUpdate push array items into contains of parent
+  //delete container
+  //delete image
+
+  const { container_id } = req.params
+  console.log(container_id)
+
+  let containsArray = []
+
+  fetchContainerById(container_id).then((container) => {
+
+    console.log(container)
+
+    containsArray = [...container.contains]
+
+    console.log("containsArray: ", containsArray)
+    console.log("Parent id: ", container.parent_id)
+
+    pushArrayIntoParentContainer(container.parent_id, containsArray, container_id).then((parent_id)=>{
+
+      deleteContainerById(container_id).then((container_id)=>{
+
+
+        deleteImageById(container.image).then((image_id)=>{
+
+
+
+          res.send(`Container ${container_id} removed!!`)
+        })
+      })
+    })
+
+
+  })
+
+
 
 
 }

@@ -21,8 +21,13 @@ exports.fetchAllRooms = async () => {
 
 
 exports.fetchContainerById = async (id) => {
+
+  console.log("Id of container to find: ", id)
+
   try {
     const container = await containerModel.findById(id);
+
+    console.log("found container: ", container)
     return container;
   } catch (error) {
     return error;
@@ -114,4 +119,67 @@ exports.deleteItemFromContainer = async (container, item_id)=>{
 
   
 
+}
+
+exports.pushArrayIntoParentContainer = async (parent_id, containsArray, container_id)=>{
+
+  console.log("Inside push to parents array: ", containsArray)
+  console.log("Parent id to find: ", parent_id)
+
+
+  try {
+
+    console.log("Inside of try")
+    
+    const parentContainer = await containerModel.findById(parent_id)
+
+    console.log("Parent container: ", parentContainer)
+
+    containsArray.forEach((element)=>{
+      parentContainer.contains.push(element)
+    })
+
+    console.log("contains of parent container: ", parentContainer.contains)
+
+    let indexOfContainer = undefined
+
+    parentContainer.contains.forEach((element, index)=>{
+      if(typeof element === "string" && element === container_id){
+        indexOfContainer = index
+      }
+    })
+
+    console.log("Index of container: "), indexOfContainer
+
+    parentContainer.contains.splice(indexOfContainer,1)
+
+    await parentContainer.save()
+
+    // await containerModel.findOneAndUpdate(
+    //   { _id: parent_id }, {  contains: [...parentContainer.contains, ...containsArray] }
+    // );
+    //   // [...parent_id.contains, ...containsArray]
+    return parent_id;
+  } catch (error) {
+    return error
+  }
+
+
+}
+
+exports.deleteContainerById = async (container_id)=>{
+
+
+  try {
+    await containerModel.findOneAndDelete(
+      { _id: container_id }
+    );
+
+    return container_id;
+  } catch (error) {
+    return error
+  }
+
+
+  
 }
