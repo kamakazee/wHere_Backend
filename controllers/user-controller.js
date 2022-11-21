@@ -3,7 +3,6 @@ const { fetchAllUsers, postNewUser } = require("../models/user-model");
 exports.getAllUsers = (req, res, next) => {
   fetchAllUsers()
     .then((users) => {
-      console.log(users);
       res.status(200).send(users);
     })
     .catch((err) => {
@@ -16,7 +15,6 @@ exports.addUser = (req, res, next) => {
 
   postNewUser(userBody)
     .then((user) => {
-      console.log(user);
       res.send(user);
     })
     .catch((err) => {

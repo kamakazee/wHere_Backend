@@ -60,6 +60,41 @@ app.delete("/api/item", removeItem)
 
 app.delete("/api/container/:container_id", removeContainer)
 
+// const findContainer= async (container_id)=>{
+
+//   try {
+//     const container = await containerModel.findOne(
+//       { _id: container_id }
+//     );
+
+//     return container;
+//   } catch (error) {
+//     return error
+//   }  
+
+// }
+
+// app.get("/api/promise", ()=>{
+
+//   const parent_id = "6374e72e1385323811642275"
+
+//   const arrayContainer = [parent_id, parent_id]
+
+//   let promisesArray = []
+
+//   arrayContainer.forEach((id)=>{
+
+//     promisesArray.push(findContainer(id))
+//   })
+
+//   console.log("Promises: ", promisesArray)
+
+//   Promise.all(promisesArray).then((results)=>{
+//     console.log(results)
+//   })
+
+// })
+
 
 // getAllItems, addItem, getItemById
 

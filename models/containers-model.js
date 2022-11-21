@@ -120,22 +120,8 @@ exports.deleteItemFromContainer = async (container, item_id)=>{
 exports.pushArrayIntoParentContainer = async (parent_id, containsArray, container_id)=>{
 
   try {
-
-    console.log("containsArray: ", containsArray)
     
     const parentContainer = await containerModel.findById(parent_id)
-
-    // var bar = new Promise((resolve, reject) => {
-    //   containsArray.forEach((element, index) => {
-
-    //     if (typeof element === "object") {
-    //       containsArray[index].parent_id = parent_id
-    //     } else {
-  
-    //       updateParentContainer(container_id, parent_id)
-    //     }
-    //   })
-    // });
 
     if (containsArray.length > 0) {
 
@@ -143,28 +129,21 @@ exports.pushArrayIntoParentContainer = async (parent_id, containsArray, containe
         parentContainer.contains.push(element)
       })
 
-      parentContainer.contains.forEach((element, index) => {
-            if (typeof element === "string" && element === container_id) {
-              indexOfContainer = index
-            }
-          })
-
       let promisesArray = []
 
       containsArray.forEach((element, index) => {
 
             if (typeof element === "object") {
+
               containsArray[index].parent_id = parent_id
             } else {     
-              promisesArray.push(updateParentContainer(container_id, parent_id))
+
+
+              promisesArray.push(updateParentContainer(element, parent_id))
             }
           })
-
-      console.log("promisesArray: ", promisesArray)
       
       Promise.all(promisesArray).then( async (results)=>{
-
-        console.log("Promises complete")
 
         let indexOfContainer = undefined
 
@@ -242,7 +221,12 @@ exports.deleteContainerById = async (container_id)=>{
 
 const updateParentContainer = async (container_id, parent_id)=>{
 
+  console.log("Parent if to update with:" , parent_id)
+  console.log("Container id to update:", container_id)
+
   try {
+    console.log("In find one and update")
+
     await containerModel.findOneAndUpdate(
       { _id: container_id }, {parent_id: parent_id}
     );
