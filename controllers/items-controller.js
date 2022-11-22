@@ -1,4 +1,4 @@
-const { fetchAllItems, postItemWithParentId, findItemById } = require("../models/items-model")
+const { fetchAllItems, postItemWithParentId, fetchItemById } = require("../models/items-model")
 const { fetchContainerById, deleteItemFromContainer} = require("../models/containers-model")
 const { postBufferedImage  } = require("../models/images-model");
 const {resizeBufferedImage} = require("../db/upload.js")
@@ -12,6 +12,18 @@ exports.getAllItems = (req, res, next) => {
     .catch((err) => {
         return err
     })
+}
+
+
+exports.getItemById = (req, res, next) => {
+  const {itemId} = req.params
+  fetchItemById(itemId)
+    .then((item) => {
+      res.status(200).send(item);
+    })
+    .catch((err) => {
+      return err;
+    });
 }
 
 exports.addNewItem = (req, res, next) => {

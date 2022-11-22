@@ -1,4 +1,4 @@
-const {itemModel, containerModel} = require("../schema/schema")
+const { itemModel, containerModel } = require("../schema/schema");
 
 exports.fetchAllItems = async () => {
   try {
@@ -7,16 +7,21 @@ exports.fetchAllItems = async () => {
   } catch (error) {
     return error;
   }
-}
+};
+
+exports.fetchItemById = async (itemId) => {
+  try {
+    const items = await itemModel.findById(itemId);
+    return items;
+  } catch (error) {
+    return error;
+  }
+};
 
 const postItem = async (itemBody) => {
-
-
   const item = new itemModel(itemBody);
 
-  
   try {
-
     return item;
   } catch (error) {
     return error;
@@ -24,7 +29,6 @@ const postItem = async (itemBody) => {
 };
 
 const updateContainerByIdWithItem = async (parent_id, item) => {
-
   try {
     await containerModel.findOneAndUpdate(
       { _id: parent_id },
@@ -33,13 +37,11 @@ const updateContainerByIdWithItem = async (parent_id, item) => {
 
     return item._id.toString();
   } catch (error) {
-    return error
+    return error;
   }
 };
 
-exports.postItemWithParentId = async (name, description, parentId, imageId)=>{
-
-
+exports.postItemWithParentId = async (name, description, parentId, imageId) => {
   const itembody = {
     name: name,
     description: description,
@@ -47,15 +49,11 @@ exports.postItemWithParentId = async (name, description, parentId, imageId)=>{
     image: imageId,
   };
 
-  return postItem(itembody).then((item) => {
-
-    return updateContainerByIdWithItem(parentId, item)
-
-  }).then(
-    (item_id) => {
-
-      return item_id
-    }
-  );
-
-}
+  return postItem(itembody)
+    .then((item) => {
+      return updateContainerByIdWithItem(parentId, item);
+    })
+    .then((item_id) => {
+      return item_id;
+    });
+};

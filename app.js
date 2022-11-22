@@ -11,11 +11,11 @@ const {
   getAllContainers,
   addContainer,
   getContainerById,
-  getRooms, addNewContainer, removeContainer
+  getRooms, addNewContainer, removeContainer, editContainer
 } = require("./controllers/containers-controller");
 const {getImageById, addBufferedImage} = require("./controllers/images-controller")
 
-const {getAllItems, addNewItem, removeItem} = require("./controllers/items-controller")
+const {getAllItems, getItemById, addNewItem, removeItem} = require("./controllers/items-controller")
 
 const {
   containerModel,
@@ -54,11 +54,19 @@ app.get("/api/rooms", getRooms)
 
 app.get("/api/items", getAllItems)
 
+app.get("/api/items/:item_id", getItemById);
+
 app.post('/api/image', uploadBuffer.single('file'), addBufferedImage)
 
 app.delete("/api/item", removeItem)
 
 app.delete("/api/container/:container_id", removeContainer)
+
+app.patch("/api/editcontainer/:container_id/", editContainer)
+
+// app.patch("/api/edititem/:container_id/", editItem);
+
+
 
 // const findContainer= async (container_id)=>{
 

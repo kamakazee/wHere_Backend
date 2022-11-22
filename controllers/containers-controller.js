@@ -3,12 +3,18 @@ const {
   postContainer,
   fetchContainerById,
   fetchAllRooms,
-  postContainerWithParentId, updateContainerById, pushArrayIntoParentContainer, deleteItemFromContainer,
-  deleteContainerById
+  postContainerWithParentId,
+  pushArrayIntoParentContainer,
+  deleteContainerById,
+  patchContainer,
 } = require("../models/containers-model");
-const { fetchImageById,postBufferedImage, deleteImageById  } = require("../models/images-model");
-const sharp = require ("sharp")
-const {resizeBufferedImage} = require("../db/upload.js")
+const {
+  fetchImageById,
+  postBufferedImage,
+  deleteImageById,
+} = require("../models/images-model");
+const sharp = require("sharp");
+const { resizeBufferedImage } = require("../db/upload.js");
 
 exports.getAllContainers = (req, res, next) => {
   fetchAllContainers()
@@ -49,9 +55,8 @@ exports.getContainerById = (req, res, next) => {
     .then((container) => {
       // console.log("Container found: ", container)
       fetchImageById(container.image).then((image) => {
-
-        if (container.contains.length===0){
-          res.send(container)
+        if (container.contains.length === 0) {
+          res.send(container);
         }
         container.image = image.img;
 
@@ -150,66 +155,74 @@ const getNestedContainerById = (id) => {
 };
 
 exports.addNewContainer = (req, res, next) => {
-
-  const containerName = req.body.name
-  const containerDescription =  req.body.description
-  const containerParentId = req.params.parent_id
+  const containerName = req.body.name;
+  const containerDescription = req.body.description;
+  const containerParentId = req.params.parent_id;
 
   resizeBufferedImage(req.file.buffer).then((resized) => {
-
-    postBufferedImage(containerName, resized.buffer).then((imageId)=>{
-
-      postContainerWithParentId(containerName, containerDescription, containerParentId, imageId).then((container_id)=>{
-
+    postBufferedImage(containerName, resized.buffer).then((imageId) => {
+      postContainerWithParentId(
+        containerName,
+        containerDescription,
+        containerParentId,
+        imageId
+      ).then((container_id) => {
         res.send(`new container created: ${container_id}`);
-
-      })
-
-    })
-
+      });
+    });
   });
 };
 
-exports.removeContainer = (req, res, next)=>{
+exports.removeContainer = (req, res, next) => {
+  const { container_id } = req.params;
+  console.log(container_id);
 
-  const { container_id } = req.params
-  console.log(container_id)
+  let containsArray = [];
 
-  let containsArray = []
+  return fetchContainerById(container_id)
+    .then((container) => {
+      console.log(container);
 
-  return fetchContainerById(container_id).then((container) => {
+      containsArray = [...container.contains];
 
-    console.log(container)
+      console.log("containsArray: ", containsArray);
+      console.log("Parent id: ", container.parent_id);
 
-    containsArray = [...container.contains]
-
-    console.log("containsArray: ", containsArray)
-    console.log("Parent id: ", container.parent_id)
-
-    return pushArrayIntoParentContainer(container.parent_id, containsArray, container_id).then((parent_id)=>{
-
-      deleteContainerById(container_id).then((container_id)=>{
-
-        deleteImageById(container.image).then((image_id)=>{
-          // {containsArray.forEach(item =>  patchParent_idByItem_id(parent_id, item._id))
-          res.send(`Container ${container_id} removed!!`)
-        }).catch(() => res.status(404).send("Unable to delete image"))
-      }).catch(()=>{
-        res.status(404).send("Unable to delete container")
-      })
-    }).catch(()=>{
-      res.status(404).send("Unable to push items to parent container")
+      return pushArrayIntoParentContainer(
+        container.parent_id,
+        containsArray,
+        container_id
+      )
+        .then((parent_id) => {
+          deleteContainerById(container_id)
+            .then((container_id) => {
+              deleteImageById(container.image)
+                .then((image_id) => {
+                  // {containsArray.forEach(item =>  patchParent_idByItem_id(parent_id, item._id))
+                  res.send(`Container ${container_id} removed!!`);
+                })
+                .catch(() => res.status(404).send("Unable to delete image"));
+            })
+            .catch(() => {
+              res.status(404).send("Unable to delete container");
+            });
+        })
+        .catch(() => {
+          res.status(404).send("Unable to push items to parent container");
+        });
     })
+    .catch(() => {
+      res.status(404).send("Container doesn't exist");
+    });
+};
 
-
-
-  }).catch(()=>{
-
-    res.status(404).send("Container doesn't exist")
-
+exports.editContainer = (req, res, next) => {
+  const { container_id } = req.params
+    const name = req.body.name;
+    const desc = req.body.description;
+    const parentId = req.body.parent_id;
+  
+  patchContainer(container_id, name ,desc, parentId).then(() => {
+    res.status(200).send("Container edited")
   })
-
-
-
-
 }
