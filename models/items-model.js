@@ -1,4 +1,5 @@
 const { itemModel, containerModel } = require("../schema/schema");
+const {fetchContainerById} = require("./containers-model")
 
 exports.fetchAllItems = async () => {
   try {
@@ -56,4 +57,30 @@ exports.postItemWithParentId = async (name, description, parentId, imageId) => {
     .then((item_id) => {
       return item_id;
     });
+};
+
+exports.patchItems = async (container_id, item_id, name, desc, parentId) => {
+
+  try {
+
+    await fetchContainerById(container_id).then((data) => {
+
+      for (let i = 0; i < data.contains.length; i++){
+        
+        if (data.contains[i]._id.toString() === item_id) {
+          let newItem = {...data.contains[i]}
+          newItem.name = name
+          newItem.description = desc
+          newItem.parent_id = parentId
+
+          return containerModel.findOneAndUpdate({ _id: parentId }, { $push: { contains: newItem } }).then(() => {
+            return containerModel.findOneAndUpdate({ _id: container_id }, { $pull: { contains: data.contains[i] } })
+          })
+        }
+      }
+    })
+
+  } catch (error) {
+    return error;
+  }
 };

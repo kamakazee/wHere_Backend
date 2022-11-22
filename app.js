@@ -15,7 +15,7 @@ const {
 } = require("./controllers/containers-controller");
 const {getImageById, addBufferedImage} = require("./controllers/images-controller")
 
-const {getAllItems, getItemById, addNewItem, removeItem} = require("./controllers/items-controller")
+const {getAllItems, getItemById, addNewItem, removeItem, editItem} = require("./controllers/items-controller")
 
 const {
   containerModel,
@@ -62,9 +62,9 @@ app.delete("/api/item", removeItem)
 
 app.delete("/api/container/:container_id", removeContainer)
 
-app.patch("/api/editcontainer/:container_id/", editContainer)
+app.patch("/api/editcontainer/:container_id", editContainer)
 
-// app.patch("/api/edititem/:container_id/", editItem);
+app.patch("/api/edititem/:container_id", editItem);
 
 
 
