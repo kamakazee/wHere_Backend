@@ -73,6 +73,10 @@ exports.editItem = (req, res, next) => {
   const desc = req.body.description;
   const parentId = req.body.parent_id;
   patchItems(container_id, item_id, name, desc, parentId).then(() => {
-    res.status(204).send("Item Edited");
-  });
+    console.log("<--- done")
+    res.status(200).send("Item Edited");
+  })
+    .catch((error) => {
+    res.status(404).send(error)
+  })
 }

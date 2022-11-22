@@ -213,37 +213,57 @@ const updateParentContainer = async (container_id, parent_id) => {
 };
 
 const removeContainerFromParent = async (oldParent_id, container_id) => {
-
   try {
-
-    await containerModel.findByIdAndUpdate({ _id: oldParent_id.toString() }, {
-      $pull: { contains: container_id },
-    });
-
-    
+    await containerModel.findByIdAndUpdate(
+      { _id: oldParent_id.toString() },
+      {
+        $pull: { contains: container_id },
+      }
+    );
   } catch (error) {
     return error;
   }
-
 };
 
 exports.patchContainer = async (container_id, name, desc, parentId) => {
-
   try {
     const container = await containerModel.findById(container_id);
 
-    await containerModel.findOneAndUpdate({ _id: container_id }, { name: name, description: desc, parent_id: parentId })
-    
-    updateContainerById(parentId, container_id).then((container_id)=>{
+    await containerModel.findOneAndUpdate(
+      { _id: container_id },
+      { name: name, description: desc, parent_id: parentId }
+    );
 
-    
+    updateContainerById(parentId, container_id).then((container_id) => {
       removeContainerFromParent(container.parent_id, container_id);
 
-
-      return container_id
-    })
-
+      return container_id;
+    });
   } catch (error) {
     return error;
   }
 };
+
+exports.pushItemIntoContainer = async (parentId, newItem) => {
+  try {
+    await containerModel.findOneAndUpdate(
+    { _id: parentId },
+    { $push: { contains: newItem } }
+    );
+    return parentId
+  } catch(error) {
+    return error
+  }
+}
+
+exports.pullItemFromContainer = async (container_id, item) => {
+  try {
+    await containerModel.findOneAndUpdate(
+      { _id: container_id },
+      { $pull: { contains: item } }
+    );
+    return container_id
+  } catch(error) {
+    return error
+  }
+}

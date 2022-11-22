@@ -1,5 +1,9 @@
 const { itemModel, containerModel } = require("../schema/schema");
-const {fetchContainerById} = require("./containers-model")
+const {
+  fetchContainerById,
+  pushItemIntoContainer,
+  pullItemFromContainer,
+} = require("./containers-model");
 
 exports.fetchAllItems = async () => {
   try {
@@ -60,26 +64,34 @@ exports.postItemWithParentId = async (name, description, parentId, imageId) => {
 };
 
 exports.patchItems = async (container_id, item_id, name, desc, parentId) => {
-
   try {
+    let done = false
+    return fetchContainerById(container_id).then((data) => {
+      for (let i = 0; i < data.contains.length; i++) {
+        if (typeof data.contains[i] === "object") {
+          if (data.contains[i]._id.toString() === item_id) {
+            let newItem = { ...data.contains[i] };
+            newItem.name = name;
+            newItem.description = desc;
+            newItem.parent_id = parentId;
+            done = true
 
-    await fetchContainerById(container_id).then((data) => {
-
-      for (let i = 0; i < data.contains.length; i++){
-        
-        if (data.contains[i]._id.toString() === item_id) {
-          let newItem = {...data.contains[i]}
-          newItem.name = name
-          newItem.description = desc
-          newItem.parent_id = parentId
-
-          return containerModel.findOneAndUpdate({ _id: parentId }, { $push: { contains: newItem } }).then(() => {
-            return containerModel.findOneAndUpdate({ _id: container_id }, { $pull: { contains: data.contains[i] } })
-          })
+            return pushItemIntoContainer(parentId, newItem).then(() => {
+              return pullItemFromContainer(container_id, data.contains[i]).then(() => {
+                console.log("<----- before done")
+                return container_id
+              })
+            });
+          }
         }
       }
+      return done;
+    }).then((done) => {
+      console.log(done, "<----- in final then")
+      if (done === false) throw Error("done")
+      return "doneeeeee"
     })
-
+    
   } catch (error) {
     return error;
   }
