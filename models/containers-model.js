@@ -24,6 +24,7 @@ exports.fetchAllRooms = async () => {
 exports.fetchContainerById = async (id) => {
   try {
     const container = await containerModel.findById(id);
+    console.log("found container", container)
     return container;
   } catch (err) {
     return err;
