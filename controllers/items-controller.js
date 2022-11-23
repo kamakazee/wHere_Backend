@@ -8,7 +8,7 @@ const {
   fetchContainerById,
   deleteItemFromContainer,
 } = require("../models/containers-model");
-const { postBufferedImage } = require("../models/images-model");
+const { postBufferedImage, fetchImageById } = require("../models/images-model");
 const { resizeBufferedImage } = require("../db/upload.js");
 
 exports.getAllItems = (req, res, next) => {
@@ -22,14 +22,26 @@ exports.getAllItems = (req, res, next) => {
 };
 
 exports.getItemById = (req, res, next) => {
-  const { itemId } = req.params;
-  fetchItemById(itemId)
-    .then((item) => {
-      res.status(200).send(item);
+  const { item_id } = req.params;
+
+  const {parent_id}=req.body
+
+  console.log("parent_id", parent_id)
+
+  fetchContainerById(parent_id).then((container)=>{
+
+    container.contains.forEach((element)=>{
+      console.log("id", element._id.toString() )
+      if(typeof element==="object" && element._id.toString() ===item_id){
+        fetchImageById(element.image).then((imageObject)=>{
+
+          element.image = imageObject.img
+          res.status(200).send(element)
+        })
+    
+      }
     })
-    .catch((err) => {
-      return err;
-    });
+  })
 };
 
 exports.addNewItem = (req, res, next) => {
