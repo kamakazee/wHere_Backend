@@ -17,6 +17,8 @@ const {getImageById, addBufferedImage} = require("./controllers/images-controlle
 
 const {getAllItems, getItemById, addNewItem, removeItem, editItem} = require("./controllers/items-controller")
 
+const {getAPI} = require("./controllers/api-controller")
+
 const {
   containerModel,
   itemModel,
@@ -31,6 +33,8 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
+
+app.get("/api", getAPI);
 
 app.get("/api/users", getAllUsers);
 

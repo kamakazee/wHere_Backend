@@ -115,7 +115,7 @@
             "description": "Allows user to remove an container",
             "queries": "6374ed2e0318fa7c71b095eb",
             "exampleResponse":
-                      [{"Container '6374ed2e0318fa7c71b095eb' removed"}]
+                      "Container 6374ed2e0318fa7c71b095eb removed"
           },
           "PATCH /api/editcontainer/:container_id": {
             "description": "Allows user to update a container, can update name, description and new parent container via a supplied json body. Current contain id is supplied via parametric endpoint :/container_id, id of new parent is supplied in the body with key of 'parent_id'",
