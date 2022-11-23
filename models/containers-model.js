@@ -5,8 +5,8 @@ exports.fetchAllContainers = async () => {
   try {
     const containers = await containerModel.find({});
     return containers;
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
 };
 
@@ -16,21 +16,17 @@ exports.fetchAllRooms = async () => {
       parent_id: "6374f23e0318fa7c71b095ed",
     });
     return rooms;
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
 };
 
 exports.fetchContainerById = async (id) => {
-  console.log("Id of container to find: ", id);
-
   try {
     const container = await containerModel.findById(id);
-
-    console.log("found container: ", container);
     return container;
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
 };
 
@@ -40,8 +36,8 @@ const postContainer = async (containerBody) => {
   try {
     await container.save();
     return container;
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
 };
 
@@ -51,10 +47,9 @@ const updateContainerById = async (parent_id, container_id) => {
       { _id: parent_id },
       { $push: { contains: container_id.toString() } }
     );
-
     return container_id.toString();
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
 };
 
@@ -91,15 +86,13 @@ exports.deleteItemFromContainer = async (container, item_id) => {
     }
   });
 
-  console.log("Index of item: ", indexOfItem);
-
   if (indexOfItem !== undefined) {
     container.contains.splice(indexOfItem, 1);
 
     await container.save();
 
     return deleteImageById(item.image).then((imageid) => {
-      return item_id;
+      return imageid;
     });
   } else {
     return Promise.reject({ msg: "failed" });
@@ -144,26 +137,6 @@ exports.pushArrayIntoParentContainer = async (
 
         return parent_id;
       });
-
-      // bar().then(async () => {
-
-      //   console.log('All done!');
-
-      //   let indexOfContainer = undefined
-
-      //   parentContainer.contains.forEach((element, index) => {
-      //     if (typeof element === "string" && element === container_id) {
-      //       indexOfContainer = index
-      //     }
-      //   })
-
-      //   parentContainer.contains.splice(indexOfContainer, 1)
-
-      //   await parentContainer.save()
-
-      //   return parent_id;
-
-      // });
     } else {
       let indexOfContainer = undefined;
 
@@ -179,8 +152,8 @@ exports.pushArrayIntoParentContainer = async (
 
       return parent_id;
     }
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
 };
 
@@ -189,26 +162,21 @@ exports.deleteContainerById = async (container_id) => {
     await containerModel.findOneAndDelete({ _id: container_id });
 
     return container_id;
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
 };
 
 const updateParentContainer = async (container_id, parent_id) => {
-  console.log("Parent if to update with:", parent_id);
-  console.log("Container id to update:", container_id);
-
   try {
-    console.log("In find one and update");
-
     await containerModel.findOneAndUpdate(
       { _id: container_id },
       { parent_id: parent_id }
     );
 
     return container_id;
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
 };
 
@@ -220,8 +188,8 @@ const removeContainerFromParent = async (oldParent_id, container_id) => {
         $pull: { contains: container_id },
       }
     );
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
 };
 
@@ -239,22 +207,22 @@ exports.patchContainer = async (container_id, name, desc, parentId) => {
 
       return container_id;
     });
-  } catch (error) {
-    return error;
+  } catch (err) {
+    return err;
   }
 };
 
 exports.pushItemIntoContainer = async (parentId, newItem) => {
   try {
     await containerModel.findOneAndUpdate(
-    { _id: parentId },
-    { $push: { contains: newItem } }
+      { _id: parentId },
+      { $push: { contains: newItem } }
     );
-    return parentId
-  } catch(error) {
-    return error
+    return parentId;
+  } catch (err) {
+    return err;
   }
-}
+};
 
 exports.pullItemFromContainer = async (container_id, item) => {
   try {
@@ -262,8 +230,8 @@ exports.pullItemFromContainer = async (container_id, item) => {
       { _id: container_id },
       { $pull: { contains: item } }
     );
-    return container_id
-  } catch(error) {
-    return error
+    return container_id;
+  } catch (err) {
+    return err;
   }
-}
+};

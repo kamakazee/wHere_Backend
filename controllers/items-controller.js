@@ -37,18 +37,21 @@ exports.addNewItem = (req, res, next) => {
   const itemDescription = req.body.description;
   const itemParentId = req.params.parent_id;
 
-  resizeBufferedImage(req.file.buffer).then((resized) => {
-    postBufferedImage(itemName, resized.buffer).then((imageId) => {
-      postItemWithParentId(
-        itemName,
-        itemDescription,
-        itemParentId,
-        imageId
-      ).then((item_id) => {
-        res.send(`new item created: ${item_id}`);
+  resizeBufferedImage(req.file.buffer)
+    .then((resized) => {
+      postBufferedImage(itemName, resized.buffer).then((imageId) => {
+        postItemWithParentId(itemName, itemDescription, itemParentId, imageId)
+          .then((item_id) => {
+            res.send(`new item created: ${item_id}`);
+          })
+          .catch((err) => {
+            return err;
+          });
       });
+    })
+    .catch((err) => {
+      return err;
     });
-  });
 };
 
 exports.removeItem = (req, res, next) => {
@@ -61,7 +64,7 @@ exports.removeItem = (req, res, next) => {
       });
     })
     .catch((error) => {
-      res.status(404).send("Item was not deleted");
+      res.status(404).send(error, "Item was not deleted");
     });
 };
 
@@ -73,7 +76,6 @@ exports.editItem = (req, res, next) => {
   const desc = req.body.description;
   const parentId = req.body.parent_id;
   patchItems(container_id, item_id, name, desc, parentId).then(() => {
-    console.log("<--- done")
     res.status(200).send("Item Edited");
   })
     .catch((error) => {

@@ -19,9 +19,7 @@ exports.fetchImageById = async (id) => {
   }
 };
 
-exports.postBufferedImage = async (name, data)=>{
-
-
+exports.postBufferedImage = async (name, data) => {
   const imageBody = {
     name: name,
     img: {
@@ -39,19 +37,14 @@ exports.postBufferedImage = async (name, data)=>{
   } catch (error) {
     return error;
   }
-}
+};
 
-exports.deleteImageById = async (imageId)=>{
-
-
+exports.deleteImageById = async (imageId) => {
   try {
-    await imageModel.findOneAndDelete(
-      { _id: imageId }
-    );
+    await imageModel.findOneAndDelete({ _id: imageId });
 
     return imageId;
   } catch (error) {
-    return error
+    return error;
   }
-
-}
+};

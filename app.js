@@ -66,47 +66,6 @@ app.patch("/api/editcontainer/:container_id", editContainer)
 
 app.patch("/api/edititem/:container_id", editItem);
 
-
-
-// const findContainer= async (container_id)=>{
-
-//   try {
-//     const container = await containerModel.findOne(
-//       { _id: container_id }
-//     );
-
-//     return container;
-//   } catch (error) {
-//     return error
-//   }  
-
-// }
-
-// app.get("/api/promise", ()=>{
-
-//   const parent_id = "6374e72e1385323811642275"
-
-//   const arrayContainer = [parent_id, parent_id]
-
-//   let promisesArray = []
-
-//   arrayContainer.forEach((id)=>{
-
-//     promisesArray.push(findContainer(id))
-//   })
-
-//   console.log("Promises: ", promisesArray)
-
-//   Promise.all(promisesArray).then((results)=>{
-//     console.log(results)
-//   })
-
-// })
-
-
-// getAllItems, addItem, getItemById
-
-
 app.post("/api/add_item", async (request, response) => {
   const item = new itemModel(request.body);
 
@@ -117,7 +76,6 @@ app.post("/api/add_item", async (request, response) => {
       { _id: "637371904e79b2a678b82078" },
       { $push: { contains: item } }
     );
-    console.log(item);
   } catch (error) {
     response.status(500).send(error);
   }
@@ -127,21 +85,16 @@ app.get("/api/items/:name", async (request, response) => {
   const getItemById = await itemModel.find({ name: request.params.name });
   try {
     response.send(getItemById);
-    console.log("Inside of Item Get");
-    console.log(request.params.name);
-    console.log(getItemById);
   } catch (error) {
     response.status(500).send(error);
   }
 });
 
 app.get("/api/images", (req, res) => {
-  //console.log("Inside of GET")
 
   imageModel.find({}, (err, items) => {
-    //find({}
+
     if (err) {
-      console.log(err);
       res.status(500).send("An error occurred", err);
     } else {
       const imagesArray = [];
@@ -163,11 +116,8 @@ app.get("/api/images", (req, res) => {
   });
 });
 
-// app.post("/api/image", upload.single("file"), addImage);
-
 app.use((err, req, res, next) => {
   console.log("something went wrong: ", err)
-  
 })
 
 connection();

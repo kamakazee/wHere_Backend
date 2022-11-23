@@ -14,8 +14,6 @@ exports.addBufferedImage = (req, res, next)=> {
     
   resizeBufferedImage(req.file.buffer).then((resized)=>{
 
-    //console.log("return from resized image",resized.buffer)
-
     postBufferedImage(req.body.name, resized.buffer).then((imageId)=>{
 
         res.send(`New image created: ${imageId}`)
