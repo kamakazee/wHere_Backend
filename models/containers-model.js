@@ -235,3 +235,14 @@ exports.pullItemFromContainer = async (container_id, item) => {
     return err;
   }
 };
+
+exports.getContainerNameById = async (container_id)=>{
+
+  try {
+    const container = await containerModel.findById(container_id);
+    return container.name;
+  } catch (err) {
+    return err;
+  }
+
+}

@@ -7,6 +7,7 @@ const {
   pushArrayIntoParentContainer,
   deleteContainerById,
   patchContainer,
+  getContainerNameById,
 } = require("../models/containers-model");
 const {
   fetchImageById,
@@ -19,7 +20,42 @@ const { resizeBufferedImage } = require("../db/upload.js");
 exports.getAllContainers = (req, res, next) => {
   fetchAllContainers()
     .then((containers) => {
-      res.status(200).send(containers);
+      //console.log("containers: ", containers)
+
+      let containerCount = 0;
+
+      containers.forEach((container, index) => {
+        // console.log("At this container:", container)
+        // console.log("Keys of object", Object.keys(container._doc))
+
+        if (
+          container._doc.hasOwnProperty("parent_id") &&
+          container._doc.parent_id.length>0) {
+          getContainerNameById(container.parent_id).then((parentName) => {
+            console.log("At this index", index);
+            console.log(parentName, "<==== parent name");
+
+            containerCount++;
+
+            // console.log("count", containerCount)
+
+            containers[index]._doc.parent_name = parentName;
+
+            console.log(containers[index]._doc.parent_name, "inside of array");
+
+            console.log(
+              "Keys inside of container",
+              Object.keys(containers[index]._doc)
+            );
+
+            console.log(containers[index], "container inside of array");
+
+            if (containerCount === containers.length - 1) {
+              res.status(200).send(containers);
+            }
+          });
+        }
+      });
     })
     .catch((err) => {
       next(err);

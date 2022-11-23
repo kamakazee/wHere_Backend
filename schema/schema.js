@@ -28,7 +28,6 @@ const ContainerSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-
   contains: {
     type: Array,
     default: [],
