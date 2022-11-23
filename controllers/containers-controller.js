@@ -291,3 +291,15 @@ exports.getAllItemsFromContainers = (req, res, next) => {
   //   res.status(200).send("All items")
   // })
 }
+
+exports.fetchContainerNameById = (req, res, next)=>{
+
+  const {container_id} = req.params
+
+  getContainerNameById(container_id).then((name)=>{
+
+    res.status(200).send(name)
+  })
+
+
+}
