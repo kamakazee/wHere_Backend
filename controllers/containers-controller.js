@@ -248,17 +248,43 @@ exports.getAllItemsFromContainers = (req, res, next) => {
   const itemsArray = []
 
   fetchAllContainers().then((containers)=>{
-
     containers.map((container) => {
+
       for (let i = 0; i < container.contains.length; i++) {
+
         if (typeof container.contains[i]==="object") {
+
           itemsArray.push(container.contains[i])
+         
         }
-     
-      }
-      
+      }    
     })
-    res.send(itemsArray)
+
+    let itemCount = 0
+
+    itemsArray.forEach((item, index)=>{
+
+      getContainerNameById(item.parent_id).then((parentName)=>{
+
+        console.log("parent name", parentName)
+
+        console.log("item keys", Object.keys( itemsArray[index]))
+
+        itemCount++
+
+      
+
+        itemsArray[index]["parent_name"] = parentName
+
+        console.log("docs", itemsArray[index])
+
+        if(itemCount===itemsArray.length){
+
+          res.send(itemsArray)
+ 
+        }
+      })
+    })
   })
 
   // fetchAllItemsFromContainers().then(() => {
