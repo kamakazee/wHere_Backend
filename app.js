@@ -11,7 +11,7 @@ const {
   getAllContainers,
   addContainer,
   getContainerById,
-  getRooms, addNewContainer, removeContainer, editContainer, getAllItemsFromContainers
+  getRooms, addNewContainer, removeContainer, editContainer, getAllItemsFromContainers, fetchContainerNameById
 } = require("./controllers/containers-controller");
 const {getImageById, addBufferedImage} = require("./controllers/images-controller")
 
@@ -61,6 +61,8 @@ app.get("/api/rooms", getRooms)
 app.get("/api/items", getAllItems)
 
 app.get("/api/items/:item_id", getItemById);
+
+app.get("/api/container/name/:container_id", fetchContainerNameById);
 
 app.post('/api/image', uploadBuffer.single('file'), addBufferedImage)
 
