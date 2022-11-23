@@ -1,0 +1,133 @@
+{
+    "GET /api": {
+      "description": "serves up a json representation of all the available endpoints of the api"
+    },
+    "GET /api/users": {
+      "description": "serves an array of all users",
+      "queries": [],
+      "exampleResponse": [{
+            "_id": "63735476c45a0c96d278035e",
+            "name": "Shahbaz",
+            "email": "Shahbaz@yahoo.co.uk",
+            "__v": 0,
+            "contains": "6374f23e0318fa7c71b095ed"
+            },
+            {
+            "_id": "637b54825aed4e4ce4ec60f8",
+            "name": "cam",
+            "email": "cam_va@yahoo.co.uk",
+            "__v": 0,
+            "contains": "6374f23e0318fa7c71b095ed"
+            }]
+        },
+    "POST /api/add_user": {
+      "description": "Allows user to create another user login",
+      "queries": [],
+      "example body": [{"name":"Shahbaz", "email":"Shahbaz@yahoo.co.uk"}],
+      "exampleResponse":
+                [{ "_id": "63735476c45a0c96d278035e",
+                    "name":"Shahbaz",
+                    "email":"Shahbaz@yahoo.co.uk", "contains":"6374f23e0318fa7c71b095ed"}]
+    },
+    "GET /api/containers": {
+        "description": "serves an array of all containers",
+        "queries": [],
+        "exampleResponse": [
+            {
+            "_id": "6374e72e1385323811642275",
+            "name": "Bathroom",
+            "description": "Toilet and shower",
+            "image": "6376833302d5ad31e2c952b5",
+            "contains": [
+            "6374f9730318fa7c71b095f7"
+            ],
+            "parent_id": "6374f23e0318fa7c71b095ed",
+            "__v": 28,
+            "parent_name": "Home"
+            }]
+          },
+    "GET /api/images/:id": {
+        "description": "serves an object requested by id which contains a key of 'img' that supplies image data in base64 as a string",
+        "queries": [],
+        "exampleResponse": 
+            {
+            "name": "desk-draw",
+            "_id": "6374c662d3d5a8875bb47d97",
+            "img":"345345345h34u5ih34uh......"
+            }
+        },
+
+    "GET /api/containers/:id": {
+        "description": "shows a specific container by a given ID",
+        "queries": ["6374ed2e0318fa7c71b095eb"],
+        "exampleResponse":
+            [{  "_id": {
+            "$oid": "6374ed2e0318fa7c71b095eb"
+            },
+            "name": "Shoebox",
+            "description": "Old shoebox for storing stuff",
+            "image": "6378a00aff39bcdcec9a5630",
+            "contains": [],
+            "parent_id": "6374f9730318fa7c71b095f7",
+            "__v": 7 }]
+        },
+        "POST /api/containers/addcontainer/:parent_id": {
+            "description": "Allows user to create a new container inside of an existing container by id, supplied via parametric end point :parent_id",
+            "queries": [],
+            "example body": [{"name":"shoebox", "description":"Old shoebox for storing stuff", "image":"6378a00aff39bcdcec9a5630"}],
+            "exampleResponse":
+                      [{  "_id": {
+                          "$oid": "6374ed2e0318fa7c71b095eb"
+                          },
+                          "name": "Shoebox",
+                          "description": "Old shoebox for storing stuff",
+                          "image": "6378a00aff39bcdcec9a5630",
+                          "contains": [],
+                          "parent_id": "6374f9730318fa7c71b095f7",
+                          "__v": 7 }]
+          },
+          "POST /api/items/addItem/:parent_id": {
+            "description": "Allows user to create a new item inside of an existing container",
+            "queries": [],
+            "example body": {
+                            "name": "Wally",
+                            "description": "Thats his name",
+                            "image": "637bcf4d1d59dd7c0eb9b712"
+                            },
+            "exampleResponse":
+                    [{
+                        "name": "Wally",
+                        "description": "Thats his name",
+                        "image": "637bcf4d1d59dd7c0eb9b712",
+                        "parent_id": "637bcf2d1d59dd7c0eb9b707",
+                        "_id": {
+                            "$oid": "637bcf4d1d59dd7c0eb9b714"
+                        }
+                    }]
+          },
+          "DELETE /api/item": {
+            "description": "Allows user to remove an item, id of item and id of parent container is supplied in the body",
+            "queries": [],
+            "example body": [{"parent_id":"546456456te45tfgsdgfdfgfg", "item_id":"453454395gfdgdfgbdfgbdfgdfg"}],
+            "exampleResponse": "item removed: 453454395gfdgdfgbdfgbdfgdfg"
+          },
+          "DELETE /api/container/:container_id": {
+            "description": "Allows user to remove an container",
+            "queries": "6374ed2e0318fa7c71b095eb",
+            "exampleResponse":
+                      [{"Container '6374ed2e0318fa7c71b095eb' removed"}]
+          },
+          "PATCH /api/editcontainer/:container_id": {
+            "description": "Allows user to update a container, can update name, description and new parent container via a supplied json body. Current contain id is supplied via parametric endpoint :/container_id, id of new parent is supplied in the body with key of 'parent_id'",
+            "queries": [],
+            "example body": [{"name":"shoebox", "description":"Old shoebox for storing stuff", "parent_id":"6378a00aff39bcdcec9a5630"}],
+            "exampleResponse": "Container edited"
+          },
+          "PATCH /api/edititem/:container_id": {
+            "description": "Allows user to edit a item inside of an existing container by id, supplied via parametric end point :container_id. User would then specify the new location by selecting a new location from the drop down list of parent_names",
+            "queries": ["6374ed2e0318fa7c71b095eb"],
+            "example body": [{"_id":"637a19aa6b26070abd4cc6bb", "name":"Hawaiian Pizza", "description":"Pineapple rocks!!!", "parent_id":"6374f23e0318fa7c71b095ed"}],
+            "exampleResponse": "item edited"
+          }
+
+}
