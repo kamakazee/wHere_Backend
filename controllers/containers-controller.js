@@ -7,7 +7,7 @@ const {
   pushArrayIntoParentContainer,
   deleteContainerById,
   patchContainer,
-  getContainerNameById,
+  getContainerNameById, getParentIds 
 } = require("../models/containers-model");
 const {
   fetchImageById,
@@ -51,7 +51,14 @@ exports.getAllContainers = (req, res, next) => {
             console.log(containers[index], "container inside of array");
 
             if (containerCount === containers.length - 1) {
-              res.status(200).send(containers);
+
+              // getParentIds(containers).then((containers)=>{
+              //   console.log(containers, "<?????????????")
+                res.status(200).send(containers);
+
+              // })
+
+           
             }
           });
         }

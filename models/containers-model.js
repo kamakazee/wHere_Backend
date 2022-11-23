@@ -236,13 +236,55 @@ exports.pullItemFromContainer = async (container_id, item) => {
   }
 };
 
-exports.getContainerNameById = async (container_id)=>{
-
+exports.getContainerNameById = async (container_id) => {
   try {
     const container = await containerModel.findById(container_id);
     return container.name;
   } catch (err) {
     return err;
   }
+};
 
-}
+// const getParentIdById = async (parent_id) => {
+//   try {
+//     const parent_container = await containerModel.findById(parent_id);
+//     return parent_container.parent_id;
+//   } catch (err) {
+//     return err;
+//   }
+// };
+
+// exports.getParentIds = async (containers) => {
+  
+//   let containerCount = 0;
+
+//   let doCount = 0
+
+//   await containers.forEach((container, index) => {
+//     const parentIdArray = [];
+
+//     let current_parent_id = container.parent_id;
+
+//     do {
+      
+//       getParentIdById(current_parent_id).then((parent_id_of_parent) => {
+        
+//         containerCount++;
+//         console.log("Container count: ", containerCount);
+//       doCount++
+//       console.log("Do Count: ", doCount)
+
+
+//         current_parent_id = parent_id_of_parent;
+
+//         parentIdArray.push(parent_id_of_parent);
+//       });
+
+//       containers[index]._doc.parent_id_array = parentIdArray;
+
+//       if (containerCount === containers.length) {
+//         return container;
+//       }
+//     } while (doCount < containers.length);
+//   });
+// };

@@ -123,3 +123,16 @@ app.use((err, req, res, next) => {
 connection();
 
 module.exports = app;
+
+/*
+
+
+Bathroom   parent_id_array: ["id of home"]
+
+edit bathroom
+
+Cabinette parent_id_array: ["id of bathroom", "id of home"] => not shown in edit of bathroom
+
+
+
+*/
