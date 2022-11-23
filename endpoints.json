@@ -21,7 +21,7 @@
             }]
         },
         "GET /api/items/:item_id": {
-          "description": "Returns an item object by parametric id, requires parent id in body",
+          "description": "Returns an item object by parametric id, requires parent id in body. Image key provides an image in base64 format as a string",
           "queries": [],
           "example body": {"parent_id":"sdfjsjdf5235443"},
           "exampleResponse": {
@@ -68,9 +68,13 @@
             "img":"345345345h34u5ih34uh......"
             }
         },
-
+        "GET /api/container/name/:container_id": {
+          "description": "returns name of container by container id",
+          "queries": [],
+          "exampleResponse": "show box"
+          },
     "GET /api/containers/:id": {
-        "description": "shows a specific container by a given ID",
+        "description": "shows a specific container by a given ID, the 'contains' key provides an array of nested objects which are items and containers. Image key of container and nested objects provides an image in base64 format as a string",
         "queries": ["6374ed2e0318fa7c71b095eb"],
         "exampleResponse":
             [{  "_id": {
@@ -86,7 +90,7 @@
         "POST /api/containers/addcontainer/:parent_id": {
             "description": "Allows user to create a new container inside of an existing container by id, supplied via parametric end point :parent_id",
             "queries": [],
-            "example body": [{"name":"shoebox", "description":"Old shoebox for storing stuff", "image":"6378a00aff39bcdcec9a5630"}],
+            "example body": {"name":"shoebox", "description":"Old shoebox for storing stuff", "file": "An Image file as part of Multipart Form"},
             "exampleResponse":
                       [{  "_id": {
                           "$oid": "6374ed2e0318fa7c71b095eb"
@@ -99,17 +103,14 @@
                           "__v": 7 }]
           },
           "POST /api/items/addItem/:parent_id": {
-            "description": "Allows user to create a new item inside of an existing container",
+            "description": "Allows user to create a new item inside of an existing container by id, supplied via parametric end point :parent_id",
             "queries": [],
-            "example body": {
-                            "name": "Wally",
-                            "description": "Thats his name",
-                            "image": "637bcf4d1d59dd7c0eb9b712"
-                            },
+            "example body": {"name":"nail clipper", "description":"for clipping nails", "file": "An Image file as part of Multipart Form"},
+
             "exampleResponse":
                     [{
-                        "name": "Wally",
-                        "description": "Thats his name",
+                        "name": "nail clipper",
+                        "description": "for clipping nails",
                         "image": "637bcf4d1d59dd7c0eb9b712",
                         "parent_id": "637bcf2d1d59dd7c0eb9b707",
                         "_id": {
@@ -118,7 +119,7 @@
                     }]
           },
           "DELETE /api/item": {
-            "description": "Allows user to remove an item, id of item and id of parent container is supplied in the body",
+            "description": "Allows user to remove an item, id of item and id of parent container is supplied in the json body",
             "queries": [],
             "example body": [{"parent_id":"546456456te45tfgsdgfdfgfg", "item_id":"453454395gfdgdfgbdfgbdfgdfg"}],
             "exampleResponse": "item removed: 453454395gfdgdfgbdfgbdfgdfg"
