@@ -11,7 +11,7 @@ const {
   getAllContainers,
   addContainer,
   getContainerById,
-  getRooms, addNewContainer, removeContainer, editContainer
+  getRooms, addNewContainer, removeContainer, editContainer, getAllItemsFromContainers
 } = require("./controllers/containers-controller");
 const {getImageById, addBufferedImage} = require("./controllers/images-controller")
 
@@ -37,6 +37,8 @@ app.get("/api/users", getAllUsers);
 app.post("/api/add_user", addUser);
 
 app.get("/api/containers", getAllContainers);
+
+app.get("/api/allitems", getAllItemsFromContainers)
 
 app.post("/api/add_container", addContainer); //don't use this one to add new containers
 

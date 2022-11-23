@@ -7,7 +7,8 @@ const {
   pushArrayIntoParentContainer,
   deleteContainerById,
   patchContainer,
-  getContainerNameById, getParentIds 
+  getContainerNameById,
+  getParentIds
 } = require("../models/containers-model");
 const {
   fetchImageById,
@@ -58,7 +59,7 @@ exports.getAllContainers = (req, res, next) => {
 
               // })
 
-           
+
             }
           });
         }
@@ -240,3 +241,27 @@ exports.editContainer = (req, res, next) => {
     res.status(200).send("Container edited");
   });
 };
+
+
+exports.getAllItemsFromContainers = (req, res, next) => {
+
+  const itemsArray = []
+
+  fetchAllContainers().then((containers)=>{
+
+    containers.map((container) => {
+      for (let i = 0; i < container.contains.length; i++) {
+        if (typeof container.contains[i]==="object") {
+          itemsArray.push(container.contains[i])
+        }
+     
+      }
+      
+    })
+    res.send(itemsArray)
+  })
+
+  // fetchAllItemsFromContainers().then(() => {
+  //   res.status(200).send("All items")
+  // })
+}
