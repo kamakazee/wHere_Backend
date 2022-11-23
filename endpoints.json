@@ -20,6 +20,18 @@
             "contains": "6374f23e0318fa7c71b095ed"
             }]
         },
+        "GET /api/items/:item_id": {
+          "description": "Returns an item object by parametric id, requires parent id in body",
+          "queries": [],
+          "example body": {"parent_id":"sdfjsjdf5235443"},
+          "exampleResponse": {
+            "name": "nail clipper",
+            "description": "Its here!!",
+            "image": "dfgsdgge636365......",
+            "parent_id": "637bcfc51d59dd7c0eb9b739",
+	          "_id": "637bd0471d59dd7c0eb9b764"
+                }
+            },
     "POST /api/add_user": {
       "description": "Allows user to create another user login",
       "queries": [],
