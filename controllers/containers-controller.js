@@ -18,8 +18,6 @@ const {
 const sharp = require("sharp");
 const { resizeBufferedImage } = require("../db/upload.js");
 
-//something in new branch
-
 const recursiveContainerCall = async (parent_id, resultArray)=>{
 
   if(parent_id.length>0){
