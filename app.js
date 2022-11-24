@@ -130,7 +130,11 @@ app.get("/api/images", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log("something went wrong: ", err)
+  app.use((request, response, next) => {
+    response.status(404).send({ status: 404, message: "endpoint doesn't exist" });
+    next(err);
+  });
+  
 })
 
 connection();
