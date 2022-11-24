@@ -18,6 +18,25 @@ const {
 const sharp = require("sharp");
 const { resizeBufferedImage } = require("../db/upload.js");
 
+//something in new branch
+
+const recursiveContainerCall = async (parent_id, resultArray)=>{
+
+  if(parent_id.length>0){
+
+    return fetchContainerById(parent_id).then((container)=>{
+
+      //console.log("Parent found:", container.name)
+      resultArray.push(container.parent_id)
+      
+      return recursiveContainerCall(container.parent_id, resultArray)
+    })
+  }else{
+    console.log("Done")
+    return resultArray
+  }
+}
+
 exports.getAllContainers = (req, res, next) => {
   fetchAllContainers()
     .then((containers) => {
@@ -53,9 +72,40 @@ exports.getAllContainers = (req, res, next) => {
 
             if (containerCount === containers.length - 1) {
 
-              // getParentIds(containers).then((containers)=>{
-              //   console.log(containers, "<?????????????")
-                res.status(200).send(containers);
+              let containerCount = 0
+
+                containers.forEach((container, index)=>{
+
+                  console.log("Container count", containerCount)
+
+                  if(container.parent_id.length>0){
+
+                  recursiveContainerCall(container.parent_id, []).then((resultsArray)=>{
+
+                    containerCount++
+
+                    //console.log("parents Array", resultsArray)
+
+                    containers[index]._doc.parents_array = resultsArray
+                    console.log("ContainerCount:", containerCount)
+
+                    if(containerCount===containers.length-1){
+
+                      res.status(200).send(containers);
+
+                    }
+
+
+                  })
+
+                }
+
+
+
+                })
+
+              
+              
 
               // })
 
@@ -305,24 +355,7 @@ exports.fetchContainerNameById = (req, res, next)=>{
 
 }
 
-//something in new branch
 
-const recursiveContainerCall = async (parent_id, resultArray)=>{
-
-  if(parent_id.length>0){
-
-    return fetchContainerById(parent_id).then((container)=>{
-
-      console.log("Parent found:", container.name)
-      resultArray.push(container.parent_id)
-      
-      return recursiveContainerCall(container.parent_id, resultArray)
-    })
-  }else{
-    console.log("Done")
-    return resultArray
-  }
-}
 
 
 exports.getContainerLocationById = (req, res, next)=>{
