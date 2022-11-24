@@ -68,6 +68,18 @@
             "img":"345345345h34u5ih34uh......"
             }
         },
+        "GET /api/container/location/:container_id": {
+          "description": "serves an array of containers which are parents of the container given by parametric endpoint :container_id",
+          "queries": [],
+          "exampleResponse": 
+          [
+            "6374ed2e0318fa7c71b095eb",
+            "6374f9730318fa7c71b095f7",
+            "6374e72e1385323811642275",
+            "6374f23e0318fa7c71b095ed",
+            ""
+          ]
+          },
         "GET /api/container/name/:container_id": {
           "description": "returns name of container by container id",
           "queries": [],
