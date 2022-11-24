@@ -27,7 +27,9 @@ const recursiveContainerCall = async (parent_id, resultArray)=>{
     return fetchContainerById(parent_id).then((container)=>{
 
       //console.log("Parent found:", container.name)
+      if(container.parent_id.length>0){
       resultArray.push(container.parent_id)
+      }
       
       return recursiveContainerCall(container.parent_id, resultArray)
     })
@@ -80,11 +82,14 @@ exports.getAllContainers = (req, res, next) => {
 
                   if(container.parent_id.length>0){
 
-                  recursiveContainerCall(container.parent_id, []).then((resultsArray)=>{
+                  const parentsArray = []
+                  parentsArray.push(container.parent_id)
+
+                  recursiveContainerCall(container.parent_id, parentsArray ).then((resultsArray)=>{
 
                     containerCount++
 
-                    //console.log("parents Array", resultsArray)
+                    console.log("parents Array", resultsArray)
 
                     containers[index]._doc.parents_array = resultsArray
                     console.log("ContainerCount:", containerCount)
