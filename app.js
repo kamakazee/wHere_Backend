@@ -11,8 +11,11 @@ const {
   getAllContainers,
   addContainer,
   getContainerById,
-  getRooms, addNewContainer, removeContainer, editContainer, getAllItemsFromContainers, fetchContainerNameById
+  getRooms, addNewContainer, removeContainer, editContainer, getAllItemsFromContainers, fetchContainerNameById, getContainerLocationById
 } = require("./controllers/containers-controller");
+
+
+
 const {getImageById, addBufferedImage} = require("./controllers/images-controller")
 
 const {getAllItems, getItemById, addNewItem, removeItem, editItem} = require("./controllers/items-controller")
@@ -73,6 +76,8 @@ app.delete("/api/container/:container_id", removeContainer)
 app.patch("/api/editcontainer/:container_id", editContainer)
 
 app.patch("/api/edititem/:container_id", editItem);
+
+app.get("/api/container/location/:container_id", getContainerLocationById)
 
 app.post("/api/add_item", async (request, response) => {
   const item = new itemModel(request.body);

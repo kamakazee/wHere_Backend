@@ -292,6 +292,7 @@ exports.getAllItemsFromContainers = (req, res, next) => {
   // })
 }
 
+
 exports.fetchContainerNameById = (req, res, next)=>{
 
   const {container_id} = req.params
@@ -299,6 +300,42 @@ exports.fetchContainerNameById = (req, res, next)=>{
   getContainerNameById(container_id).then((name)=>{
 
     res.status(200).send(name)
+  })
+
+
+}
+
+//something in new branch
+
+const recursiveContainerCall = async (parent_id, resultArray)=>{
+
+  if(parent_id.length>0){
+
+    return fetchContainerById(parent_id).then((container)=>{
+
+      console.log("Parent found:", container.name)
+      resultArray.push(container.parent_id)
+      
+      return recursiveContainerCall(container.parent_id, resultArray)
+    })
+  }else{
+    console.log("Done")
+    return resultArray
+  }
+}
+
+
+exports.getContainerLocationById = (req, res, next)=>{
+
+  console.log("Inside gte location")
+
+  const {container_id} = req.params
+
+  recursiveContainerCall(container_id, []).then((resultArray)=>{
+
+    console.log("Result Array", resultArray)
+
+    res.send(resultArray)
   })
 
 
